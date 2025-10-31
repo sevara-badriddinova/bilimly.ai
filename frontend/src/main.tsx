@@ -10,13 +10,15 @@ import LessonViewPage from './pages/Lessons/LessonViewPage'
 import PricingPage from './pages/PricingPage'
 import SignInPage from './pages/Auth/SignInPage'
 import SignUpPage from './pages/Auth/SignUpPage'
+import {PublicRoute} from "./routes/PublicRoute";
+import {ProtectedRoute} from "./routes/ProtectedRoute";
 
 const router = createBrowserRouter([
-  { path: '/', element: <LandingPage /> },
-  { path: '/dashboard', element: <DashboardPage /> },
-  { path: '/chat', element: <ChatPage /> },
-  { path: '/lessons', element: <LessonsPage /> },
-  { path: '/lessons/:id', element: <LessonViewPage /> },
+  { path: '/', element:<PublicRoute><LandingPage /> </PublicRoute>},
+  { path: '/dashboard', element:<ProtectedRoute><DashboardPage /> </ProtectedRoute>},
+  { path: '/chat', element:<ProtectedRoute><ChatPage /></ProtectedRoute> },
+  { path: '/lessons', element: <ProtectedRoute><LessonsPage /> </ProtectedRoute>},
+  { path: '/lessons/:id', element: <ProtectedRoute><LessonViewPage /> </ProtectedRoute> },
   { path: '/pricing', element: <PricingPage /> },
   { path: '/auth/sign-in', element: <SignInPage /> },
   { path: '/auth/sign-up', element: <SignUpPage /> },
