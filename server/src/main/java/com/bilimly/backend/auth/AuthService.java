@@ -2,7 +2,6 @@ package com.bilimly.backend.auth;
 
 import com.bilimly.backend.user.User;
 import com.bilimly.backend.user.UserRepository;
-import com.bilimly.backend.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

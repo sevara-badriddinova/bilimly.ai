@@ -22,7 +22,7 @@ export default function ChatPage() {
       <div className="min-h-screen w-full" style={{ background: '#F8FAFC' }}>
         <Navbar showPrivateLinks onLogout={() => {
           localStorage.removeItem("token");
-          window.location.href = "/"; // redirect to homepage after logout
+          window.location.href = "/";
         }}/>
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-10">
           <div className="flex flex-col h-[70vh] bg-white rounded-2xl shadow p-6">

@@ -1,5 +1,6 @@
-package com.bilimly.backend.ai;
+package com.bilimly.backend.chat;
 
+import com.bilimly.backend.ai.AiService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -9,14 +10,14 @@ import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/ai")
-public class AiController {
+@RequestMapping("/api/chat")
+public class ChatController {
     private final AiService aiService;
 
-    @PostMapping("/chat")
-    public ResponseEntity<?> chat(@RequestBody Map<String, String> request, Authentication authentication) {
+    @PostMapping
+    public ResponseEntity<?> sendMessage(@RequestBody Map<String, String> request, Authentication authentication) {
         String message = request.get("message");
-        String email = authentication != null ? authentication.getName() : "unknown";
+        String email = authentication.getName(); // Get email from JWT token
 
         if (message == null || message.trim().isEmpty()) {
             return ResponseEntity.badRequest().body(Map.of("error", "Message cannot be empty"));
@@ -30,3 +31,4 @@ public class AiController {
         }
     }
 }
+

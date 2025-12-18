@@ -30,7 +30,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         // grab authorization header
         String header = request.getHeader("Authorization");
         // other pages (login/sign up) don't need tokens
-        if (header == null || !header.startsWith("Bearer: ")){
+        if (header == null || !header.startsWith("Bearer ")){
             filterChain.doFilter(request, response);
             return;
         }
