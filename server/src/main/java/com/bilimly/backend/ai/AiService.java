@@ -1,4 +1,4 @@
-package com.bilimly.backend;
+package com.bilimly.backend.ai;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
