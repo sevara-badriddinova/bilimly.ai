@@ -10,7 +10,7 @@ export default function Footer() {
           <div className="flex items-center gap-6">
             <Link to="/about" className="hover:underline">About</Link>
             <Link to="/contact" className="hover:underline">Contact</Link>
-            <a href="https://t.me/" target="_blank" rel="noreferrer" className="hover:underline">Telegram</a>
+            <a href="src/components/ui/Footer" target="_blank" rel="noreferrer" className="hover:underline">Telegram</a>
           </div>
         </div>
       </div>

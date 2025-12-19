@@ -1,6 +1,6 @@
 import React from 'react'
-import Navbar from '../../components/Navbar'
-import Footer from '../../components/Footer'
+import Navbar from '../../components/ui/Navbar'
+import Footer from '../../components/ui/Footer'
 
 const lessons = [
   { key:'grammar', name:'Grammar', desc:'Clear Uzbek explanations' },
@@ -11,7 +11,6 @@ const lessons = [
 export default function LessonsPage() {
   return (
     <div className="min-h-screen w-full" style={{ background:'#F8FAFC' }}>
-      <Navbar />
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {lessons.map(l=> (
@@ -22,7 +21,6 @@ export default function LessonsPage() {
           ))}
         </div>
       </div>
-      <Footer />
     </div>
   )
 }

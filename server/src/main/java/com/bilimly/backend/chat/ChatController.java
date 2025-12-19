@@ -1,6 +1,6 @@
 package com.bilimly.backend.chat;
 
-import com.bilimly.backend.ai.AiService;
+import com.bilimly.backend.AiService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;

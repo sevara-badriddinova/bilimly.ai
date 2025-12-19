@@ -27,6 +27,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
+        System.out.println(">>> JwtAuthFilter HIT: " + request.getRequestURI());
+        System.out.println(">>> Authorization header: " + request.getHeader("Authorization"));
         // grab authorization header
         String header = request.getHeader("Authorization");
         // other pages (login/sign up) don't need tokens
@@ -34,6 +36,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
+
 
         // cut off the Bearer and keep token
         String token = header.substring(7);

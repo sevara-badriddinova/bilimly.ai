@@ -6,7 +6,7 @@ export function PublicRoute({children}: {children: JSX.Element}){
 
     // redirect to app dashboard if logged in
     if (isAuthenticated){
-        return <Navigate to="/chat" replace/>;
+        return <Navigate to="/dashboard" replace/>;
     }
 
     return children;

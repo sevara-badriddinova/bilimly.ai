@@ -20,13 +20,11 @@ export default function HeroSection() {
         </motion.div>
         <motion.div initial={{opacity:0,scale:.96}} whileInView={{opacity:1,scale:1}} viewport={{once:true}} transition={{duration:.5}}>
           <div className="mx-auto max-w-md rounded-2xl p-5 shadow-2xl ring-1 ring-white/20" style={{ background: 'linear-gradient(145deg, rgba(255,255,255,0.2), rgba(2,48,71,0.2))' }}>
-            <svg viewBox="0 0 800 520" className="w-full h-auto" role="img" aria-label="AI robot illustration">
-              <rect x="160" y="180" rx="20" ry="20" width="480" height="300" fill="#00509d" />
-              <circle cx="400" cy="240" r="60" fill="#ffd500" />
-              <rect x="340" y="300" width="120" height="20" rx="10" fill="#fff" opacity="0.85" />
-              <rect x="210" y="350" width="380" height="24" rx="12" fill="#219EBC" />
-              <rect x="210" y="390" width="300" height="24" rx="12" fill="#FFB703" />
-            </svg>
+            <img
+                src="/logo2.png"
+                alt="Bilimly.ai Logo"
+                className="w-full h-auto object-contain drop-shadow-xl"
+            />
           </div>
         </motion.div>
       </div>
