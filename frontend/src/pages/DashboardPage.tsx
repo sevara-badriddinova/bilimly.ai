@@ -1,55 +1,109 @@
-import React, { useState } from 'react';
-import Navbar from './components/ui/Navbar';
-import Footer from './components/ui/Footer';
 
-export default function ChatPage() {
-  const [messages, setMessages] = useState([
-    { role: "assistant", text: "Hi Sevara! 👋 How’s your English practice today?" }
-  ]);
-  const [input, setInput] = useState("");
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
-  const handleSend = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!input.trim()) return;
-    setMessages(prev => [...prev, { role: "user", text: input }]);
-    setTimeout(() => {
-      setMessages(prev => [...prev, { role: "assistant", text: "That’s great! Let’s practice ordering coffee ☕" }]);
-    }, 1000);
-    setInput("");
-  };
+export default function DashboardPage() {
+  const navigate = useNavigate();
+  const { user } = useAuth();
 
   return (
-      <div className="min-h-screen w-full" style={{ background: '#F8FAFC' }}>
-        <Navbar showPrivateLinks onLogout={() => {
-          localStorage.removeItem("token");
-          window.location.href = "/"; // redirect to homepage after logout
-        }}/>
-        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-10">
-          <div className="flex flex-col h-[70vh] bg-white rounded-2xl shadow p-6">
-            <div className="flex-1 overflow-y-auto space-y-4">
-              {messages.map((msg, idx) => (
-                  <div key={idx} className={`p-3 rounded-xl max-w-[75%] ${
-                      msg.role === "assistant" ? "bg-[#E3F2FD] self-start" : "bg-[#FFB703]/20 self-end"
-                  }`}>
-                    {msg.text}
-                  </div>
-              ))}
-            </div>
-            <form onSubmit={handleSend} className="mt-4 flex gap-2">
-              <input
-                  type="text"
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  placeholder="Type your message..."
-                  className="flex-1 border rounded-xl px-4 py-2 outline-none"
-              />
-              <button type="submit" className="bg-[#023047] text-white px-6 rounded-xl">
-                Send
-              </button>
-            </form>
+    <div className="flex flex-col max-w-6xl mx-auto px-4 py-8">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-[#023047]">
+          Welcome back, {user?.email?.split('@')[0] || 'Student'}! 👋
+        </h1>
+        <p className="text-gray-600 mt-2">Ready to improve your English today?</p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Grammar Card */}
+        <div
+          onClick={() => navigate('/grammar')}
+          className="bg-white rounded-2xl shadow-lg p-6 cursor-pointer hover:shadow-xl transition-shadow"
+        >
+          <div className="text-4xl mb-4">✍️</div>
+          <h3 className="text-xl font-bold text-[#023047] mb-2">Grammar</h3>
+          <p className="text-gray-600 text-sm">
+            Master English grammar with 150+ interactive exercises
+          </p>
+        </div>
+
+        {/* Vocabulary Card */}
+        <div
+          onClick={() => navigate('/vocabulary')}
+          className="bg-white rounded-2xl shadow-lg p-6 cursor-pointer hover:shadow-xl transition-shadow"
+        >
+          <div className="text-4xl mb-4">📚</div>
+          <h3 className="text-xl font-bold text-[#023047] mb-2">Vocabulary</h3>
+          <p className="text-gray-600 text-sm">
+            Build your word bank with 250+ essential words
+          </p>
+        </div>
+
+        {/* Speaking Card */}
+        <div
+          onClick={() => navigate('/speaking')}
+          className="bg-white rounded-2xl shadow-lg p-6 cursor-pointer hover:shadow-xl transition-shadow"
+        >
+          <div className="text-4xl mb-4">🗣️</div>
+          <h3 className="text-xl font-bold text-[#023047] mb-2">Speaking</h3>
+          <p className="text-gray-600 text-sm">
+            Practice pronunciation with guided exercises
+          </p>
+        </div>
+
+        {/* Listening Card */}
+        <div
+          onClick={() => navigate('/listening')}
+          className="bg-white rounded-2xl shadow-lg p-6 cursor-pointer hover:shadow-xl transition-shadow"
+        >
+          <div className="text-4xl mb-4">🎧</div>
+          <h3 className="text-xl font-bold text-[#023047] mb-2">Listening</h3>
+          <p className="text-gray-600 text-sm">
+            Improve comprehension with audio exercises
+          </p>
+        </div>
+
+        {/* Chat Card */}
+        <div
+          onClick={() => navigate('/chat')}
+          className="bg-white rounded-2xl shadow-lg p-6 cursor-pointer hover:shadow-xl transition-shadow"
+        >
+          <div className="text-4xl mb-4">💬</div>
+          <h3 className="text-xl font-bold text-[#023047] mb-2">AI Tutor Chat</h3>
+          <p className="text-gray-600 text-sm">
+            Practice English with your AI tutor
+          </p>
+        </div>
+
+        {/* Progress Card */}
+        <div className="bg-white rounded-2xl shadow-lg p-6 opacity-50">
+          <div className="text-4xl mb-4">📊</div>
+          <h3 className="text-xl font-bold text-[#023047] mb-2">Progress</h3>
+          <p className="text-gray-600 text-sm">
+            Track your learning journey (Coming soon)
+          </p>
+        </div>
+      </div>
+
+      {/* Quick Stats */}
+      <div className="mt-8 bg-gradient-to-r from-[#023047] to-[#0F4C75] rounded-2xl shadow-lg p-6 text-white">
+        <h3 className="text-xl font-bold mb-4">Your Progress</h3>
+        <div className="grid grid-cols-3 gap-4">
+          <div>
+            <div className="text-3xl font-bold">0</div>
+            <div className="text-sm opacity-80">Lessons Completed</div>
+          </div>
+          <div>
+            <div className="text-3xl font-bold">0</div>
+            <div className="text-sm opacity-80">Words Learned</div>
+          </div>
+          <div>
+            <div className="text-3xl font-bold">0</div>
+            <div className="text-sm opacity-80">Days Streak</div>
           </div>
         </div>
-        <Footer />
       </div>
+    </div>
   );
 }

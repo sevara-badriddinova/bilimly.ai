@@ -70,7 +70,8 @@ public class AuthController {
         return ResponseEntity.ok(Map.of(
                 "id", user.getId(),
                 "email", user.getEmail(),
-                "name", user.getName()
+                "name", user.getName() != null ? user.getName() : "",
+                "role", user.getRole() != null ? user.getRole().name() : "USER"
         ));
     }
 }

@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import Logo from "./Logo";
-import { useAuth } from "../../hooks/useAuth";
+import useAuth from "../../hooks/useAuth";
 import { useTranslation } from "react-i18next";
 import i18n from "../../i18n";
 
@@ -28,11 +28,11 @@ export default function Navbar() {
                     <Logo />
                 </Link>
 
-                <div className="flex gap-3 text-white font-medium">
-                    <button onClick={() => switchLanguage("uz")}>UZ</button>
-                    <button onClick={() => switchLanguage("ru")}>RU</button>
-                    <button onClick={() => switchLanguage("en")}>EN</button>
-                </div>
+                <select className="bg-transparent text-white font-medium outline-none" value={i18n.value} onChange={(e) => switchLanguage(e.target.value)}>
+                    <option value="uz">UZ</option>
+                    <option value="ru">RU</option>
+                    <option value="en">EN</option>
+                </select>
 
                 <div className="hidden md:flex items-center gap-6 text-white/90 text-sm font-medium">
                     {isAuthenticated ? (

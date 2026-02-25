@@ -7,7 +7,7 @@ import HowItWorks from "./HowItWorks";
 export default function LandingPage() {
   return (
     <div className="min-h-screen w-full" style={{ background: '#F8FAFC', color:'#023047' }}>
-      <Navbar />
+
       <HeroSection />
         <HowItWorks/>
       <Footer />

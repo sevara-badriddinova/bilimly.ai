@@ -17,3 +17,20 @@ export async function loginUser(email: string, password: string){
     });
     return await res.json();
 }
+
+// Fetch current user with authentication token
+export async function getCurrentUser(token: string){
+    const res = await fetch(`${API_URL}/api/auth/me`, {
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+        }
+    });
+
+    if (!res.ok) {
+        throw new Error('Failed to fetch user data');
+    }
+
+    return await res.json();
+}

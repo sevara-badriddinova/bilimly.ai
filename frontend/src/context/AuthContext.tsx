@@ -1,48 +1,118 @@
-import { createContext, useState, useEffect } from "react";
-import axios from "axios";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { getCurrentUser } from "../services/api";
 
-export const AuthContext = createContext<any>(null);
+export type User = {
+    id: number;
+    email: string;
+    name?: string;
+    role: "USER" | "ADMIN";
+};
+
+type AuthContextValue = {
+    user: User | null;
+    isAuthenticated: boolean;
+    isLoading: boolean;
+    login: (token: string, rememberMe?: boolean) => Promise<void>;
+    logout: () => void;
+    refresh: () => Promise<void>;
+};
+
+export const AuthContext = createContext<AuthContextValue | null>(null);
+
+// Token storage keys
+const TOKEN_KEY = "auth_token";
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-    const [user, setUser] = useState(null);
+    const [user, setUser] = useState<User | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
+
     const isAuthenticated = !!user;
 
+    // Fetch user data using token
     async function fetchUser() {
+        const token = getToken();
+        if (!token) {
+            setUser(null);
+            return;
+        }
+
         try {
-            const token = localStorage.getItem("token");
-            if (!token) return;
-
-            const res = await axios.get("/api/auth/me", {
-                headers: { Authorization: `Bearer ${token}` },
-            });
-
-            setUser(res.data);
-        } catch (err) {
-            console.log("Not authenticated");
+            const userData = await getCurrentUser(token);
+            setUser(userData);
+        } catch (error) {
+            console.error("Failed to fetch user:", error);
+            // Token might be expired or invalid
+            removeToken();
             setUser(null);
         }
     }
 
-    // load user on mount
+    // On app mount, try to restore session from localStorage
     useEffect(() => {
-        fetchUser();
+        (async () => {
+            try {
+                await fetchUser();
+            } catch (error) {
+                console.error("Session restore failed:", error);
+                setUser(null);
+            } finally {
+                setIsLoading(false);
+            }
+        })();
     }, []);
 
-    // login helper
-    const login = async(token: string) => {
-        localStorage.setItem("token", token);
-        await fetchUser();
+    // Login: save token and fetch user data
+    const login = async (token: string, rememberMe?: boolean): Promise<void> => {
+        setIsLoading(true);
+        try {
+            saveToken(token, rememberMe);
+            await fetchUser();
+        } finally {
+            setIsLoading(false);
+        }
     };
 
-    // logout helper
+    // Logout: clear token and user data
     const logout = () => {
-        localStorage.removeItem("token");
+        removeToken();
         setUser(null);
     };
 
-    return (
-        <AuthContext.Provider value={{ user, isAuthenticated, login, logout }}>
-            {children}
-        </AuthContext.Provider>
+    const value = useMemo<AuthContextValue>(
+        () => ({
+            user,
+            isAuthenticated,
+            isLoading,
+            login,
+            logout,
+            refresh: fetchUser,
+        }),
+        [user, isAuthenticated, isLoading]
     );
+
+    return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+}
+
+export function useAuth() {
+    const ctx = useContext(AuthContext);
+    if (!ctx) throw new Error("useAuth must be used inside <AuthProvider>");
+    return ctx;
+}
+
+// Token management helpers
+export function saveToken(token: string, remember: boolean = true) {
+    if (remember) {
+        localStorage.setItem(TOKEN_KEY, token);
+    } else {
+        sessionStorage.setItem(TOKEN_KEY, token);
+    }
+}
+
+export function getToken(): string | null {
+    return localStorage.getItem(TOKEN_KEY) || sessionStorage.getItem(TOKEN_KEY);
+}
+
+export function removeToken() {
+    localStorage.removeItem(TOKEN_KEY);
+    sessionStorage.removeItem(TOKEN_KEY);
 }
