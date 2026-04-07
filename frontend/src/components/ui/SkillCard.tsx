@@ -1,26 +1,25 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 
 // Supports BOTH the new prop shape AND the old shape from existing pages
 interface SkillCardProps {
-  // New props (used by GrammarPage, DashboardPage, SpeakingPage etc.)
   icon?: string;
   title?: string;
-  subtitle?: string;       // Uzbek subtitle
+  subtitle?: string;
   desc?: string;
   meta?: string;
   color?: string;
   onClick?: () => void;
   index?: number;
 
-  // Old props (used by pre-existing Vocabulary, Listening pages)
   id?: string;
   titleUz?: string;
   description?: string;
   lessonsCount?: number;
+  wordsCount?: number;
   path?: string;
   progress?: number;
+  isLocked?: boolean;
 }
 
 export default function SkillCard(props: SkillCardProps) {
@@ -31,7 +30,13 @@ export default function SkillCard(props: SkillCardProps) {
   const title = props.title ?? '';
   const subtitle = props.subtitle ?? props.titleUz;
   const desc = props.desc ?? props.description ?? '';
-  const meta = props.meta ?? (props.lessonsCount != null ? `📖 ${props.lessonsCount} lessons` : undefined);
+  const meta =
+    props.meta ??
+    (props.lessonsCount != null
+        ? `📖 ${props.lessonsCount} lessons`
+        : props.wordsCount != null
+        ? `📝 ${props.wordsCount} words`
+        : undefined);
   const color = props.color ?? '#0EA5C9';
   const index = props.index ?? 0;
   const handleClick = props.onClick ?? (props.path ? () => navigate(props.path!) : undefined);
