@@ -1,17 +1,31 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500;600&display=swap');
+
+:root {
+  --navy: #0D1B2A;
+  --navy-light: #1A2E45;
+  --teal: #0EA5C9;
+  --teal-light: #38BDF8;
+  --amber: #F59E0B;
+  --amber-bright: #FCD34D;
+  --surface: #F0F6FF;
+  --surface-dark: #E2EDF8;
+  --text: #0D1B2A;
+  --text-muted: #4A6280;
+}
 
 html {
-  font-family: Inter, Poppins, ui-sans-serif, system-ui, sans-serif;
+  font-family: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
+  scroll-behavior: smooth;
 }
 
 body {
-  font-family: 'Inter', sans-serif;
-  color: #023047; /* dashboard text color */
-  background: #F8FAFC;
+  font-family: 'DM Sans', sans-serif;
+  color: var(--text);
+  background: var(--surface);
+  -webkit-font-smoothing: antialiased;
 }
 
-
-.dark body {
-  background-color: #0B1117;
-  color: #ffffff;
+h1, h2, h3, h4 {
+  font-family: 'Sora', sans-serif;
 }

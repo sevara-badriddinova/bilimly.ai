@@ -1,0 +1,29 @@
+# IDE
+.idea/
+.vscode/
+*.iml
+*.iws
+*.ipr
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Maven
+server/target/
+server/.mvn/
+server/mvnw
+server/mvnw.cmd
+
+# Environment variables
+.env
+.env.local
+*.env
+
+# Logs
+*.log
+logs/
+
+server/target/
+*.properties
+!**/application.properties.example

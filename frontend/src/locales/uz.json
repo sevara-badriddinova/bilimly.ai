@@ -2,5 +2,109 @@
   "dashboard": "Boshqaruv paneli",
   "chat": "Chat",
   "signIn": "Kirish",
-  "signOut": "Chiqish"
+  "signOut": "Chiqish",
+  "welcome": "Xush kelibsiz",
+  "grammar": "Grammatika",
+  "vocabulary": "Lug'at",
+  "listening": "Eshitish",
+  "speaking": "Gapirish",
+  "lessons": "Darslar",
+  "progress": "Taraqqiyot",
+  "level": "Daraja",
+  "xp": "Tajriba",
+  "streak": "Ketma-ketlik",
+  "continue": "Davom etish",
+  "start": "Boshlash",
+  "backTo": "Qaytish",
+  "completed": "Yakunlandi",
+  "locked": "Yopiq",
+
+  "hero": {
+    "title": "Global texnologiya kareralari uchun ingliz tilini o'rganing",
+    "subtitle": "O'zbekistonlik STEM talabalar uchun sun'iy intellekt asosida ingliz tili o'rganish platformasi",
+    "cta": "Bepul boshlash",
+    "learnMore": "Batafsil"
+  },
+
+  "grammarPage": {
+    "title": "Grammatika darslari",
+    "subtitle": "Ingliz grammatikasini qadam-baqadam o'rganing",
+    "tips": {
+      "title": "Grammatika o'rganish bo'yicha maslahatlar",
+      "tip1": "Muntazam mashq qiling - kuniga 10 daqiqa ham yordam beradi!",
+      "tip2": "Eng yaxshi natijalar uchun mashqlarni tartib bilan bajaring",
+      "tip3": "Xatolaringizni ko'rib chiqing va ulardan o'rganing",
+      "tip4": "Yangi grammatikani o'z gaplarida qo'llashga harakat qiling"
+    }
+  },
+
+  "vocabularyPage": {
+    "title": "Lug'at darslari",
+    "subtitle": "Professional lug'atingizni kengaytiring",
+    "tips": {
+      "title": "Lug'at o'rganish bo'yicha maslahatlar",
+      "tip1": "So'zlarni kontekstda o'rganing, alohida emas",
+      "tip2": "Yangi so'zlarni darhol gaplarda ishlating",
+      "tip3": "Yaxshi eslab qolish uchun muntazam takrorlang",
+      "tip4": "Tez-tez ishlatiladigan professional atamalarga e'tibor bering"
+    }
+  },
+
+  "listeningPage": {
+    "title": "Tinglash mashqi",
+    "subtitle": "Tinglash tushunchasini yaxshilang"
+  },
+
+  "speakingPage": {
+    "title": "Gapirish mashqi",
+    "subtitle": "Og'zaki ingliz tilida ishonchni oshiring"
+  },
+
+  "chatPage": {
+    "title": "Bilimly AI Murabbiy",
+    "subtitle": "Professional ingliz tili muloqoti bo'yicha treining",
+    "welcome": "Bilimly AI ga xush kelibsiz! Men sizning ingliz tili muloqoti murabbiyingiz va o'quv dasturi ishlab chiquvchisiman.",
+    "capabilities": "Men sizga yordam bera olaman:",
+    "grammarFeedback": "Grammatika bo'yicha fikr - Istalgan inglizcha gapni yozing, men uni batafsil tahlil bilan tuzataman",
+    "lessonGeneration": "Dars yaratish - Istalgan grammatika mavzusi bo'yicha dars so'rang (masalan, \"Present Perfect uchun dars yarating\")",
+    "careerEnglish": "Karera ingliz tili - Intervyu va texnologiya kareralari uchun professional muloqotni mashq qiling",
+    "placeholder": "Bu yerga mashq uchun inglizcha matn yozing...",
+    "analyzing": "Tahlil qilyapman...",
+    "send": "Yuborish",
+    "sending": "Yuborilmoqda",
+    "practiceNote": "Batafsil fikr olish uchun istalgan inglizcha gap yoki paragrafni mashq qiling"
+  },
+
+  "auth": {
+    "signIn": "Kirish",
+    "signUp": "Ro'yxatdan o'tish",
+    "email": "Email",
+    "password": "Parol",
+    "confirmPassword": "Parolni tasdiqlang",
+    "rememberMe": "Meni eslab qol",
+    "forgotPassword": "Parolni unutdingizmi?",
+    "noAccount": "Hisobingiz yo'qmi?",
+    "hasAccount": "Allaqachon hisobingiz bormi?",
+    "signUpLink": "Ro'yxatdan o'ting",
+    "signInLink": "Kirish"
+  },
+
+  "lesson": {
+    "unitComplete": "Bo'lim yakunlandi!",
+    "accuracy": "Aniqlik",
+    "correct": "To'g'ri",
+    "earned": "Ishlab topildi",
+    "backToGrammar": "Grammatikaga qaytish",
+    "backToVocabulary": "Lug'atga qaytish",
+    "outOfHearts": "Yuraklar tugadi!",
+    "outOfHeartsMessage": "Xavotir olmang, siz to'xtagan joydan yana urinib ko'rishingiz mumkin.",
+    "finishUnit": "Bo'limni yakunlash"
+  },
+
+  "dashboard": {
+    "yourProgress": "Sizning taraqqiyotingiz",
+    "continue": "O'rganishni davom ettirish",
+    "skills": "Ko'nikmalar",
+    "achievements": "Yutuqlar"
+  }
 }

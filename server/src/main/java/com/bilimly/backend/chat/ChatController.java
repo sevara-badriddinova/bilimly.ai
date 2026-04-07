@@ -24,7 +24,7 @@ public class ChatController {
         }
 
         try {
-            String response = aiService.chat(message);
+            String response = aiService.chat(message, null);
             return ResponseEntity.ok(Map.of("message", response, "user", email));
         } catch (Exception e) {
             return ResponseEntity.status(500).body(Map.of("error", "Failed to process message: " + e.getMessage()));

@@ -1,35 +1,139 @@
 import React from 'react'
 import { motion } from 'framer-motion'
-import Button from '../../components/ui/Button'
+import { Link } from 'react-router-dom'
 
 export default function HeroSection() {
   return (
-    <section className="relative overflow-hidden" style={{ background: '#219EBC' }}>
-      <div className="absolute -top-24 -right-24 h-72 w-72 rounded-full blur-3xl opacity-40" style={{ background: '#FFB703' }} />
-      <div className="absolute -bottom-24 -left-24 h-72 w-72 rounded-full blur-3xl opacity-30" style={{ background: '#FB8500' }} />
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 sm:py-24 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center text-white">
-        <motion.div initial={{opacity:0,y:20}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{duration:.6}}>
-          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight">Learn English in Uzbek with AI 🤖</h1>
-          <p className="mt-4 text-base sm:text-lg max-w-xl text-white/90">
-            Your personal AI tutor that explains grammar, vocabulary, and speaking — all in Uzbek.
-          </p>
-          <div className="mt-8 flex flex-col sm:flex-row gap-3">
-            <Button>Start Learning</Button>
-            <Button variant="outline">Sign In</Button>
-          </div>
-        </motion.div>
-        <motion.div initial={{opacity:0,scale:.96}} whileInView={{opacity:1,scale:1}} viewport={{once:true}} transition={{duration:.5}}>
-          <div className="mx-auto max-w-md rounded-2xl p-5 shadow-2xl ring-1 ring-white/20" style={{ background: 'linear-gradient(145deg, rgba(255,255,255,0.2), rgba(2,48,71,0.2))' }}>
-            <img
-                src="/logo2.png"
-                alt="Bilimly.ai Logo"
-                className="w-full h-auto object-contain drop-shadow-xl"
-            />
-          </div>
-        </motion.div>
+    <section className="relative overflow-hidden" style={{ background: '#0D1B2A', minHeight: '88vh' }}>
+      {/* Background mesh */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[500px] rounded-full opacity-20"
+          style={{ background: 'radial-gradient(ellipse, #0EA5C9 0%, transparent 70%)', filter: 'blur(60px)' }} />
+        <div className="absolute bottom-0 right-0 w-[400px] h-[400px] rounded-full opacity-10"
+          style={{ background: 'radial-gradient(ellipse, #F59E0B 0%, transparent 70%)', filter: 'blur(80px)' }} />
+        {/* Dot grid */}
+        <svg className="absolute inset-0 w-full h-full opacity-[0.04]" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="dots" x="0" y="0" width="24" height="24" patternUnits="userSpaceOnUse">
+              <circle cx="2" cy="2" r="1.5" fill="white" />
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#dots)" />
+        </svg>
+      </div>
+
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-20 pb-10 lg:pt-28 lg:pb-16">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+
+          {/* Left — copy */}
+          <motion.div
+            initial={{ opacity: 0, y: 28 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+          >
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold mb-6"
+              style={{ background: 'rgba(14,165,201,0.15)', color: '#38BDF8', border: '1px solid rgba(14,165,201,0.3)' }}>
+              <span className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-pulse inline-block" />
+              AI-Powered English Learning
+            </div>
+
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.1] tracking-tight text-white">
+              Learn English
+              <br />
+              <span style={{ color: '#0EA5C9' }}>in Uzbek</span>
+              <br />
+              with AI
+            </h1>
+
+            <p className="mt-5 text-base sm:text-lg leading-relaxed max-w-md" style={{ color: 'rgba(255,255,255,0.6)' }}>
+              Your personal AI tutor that explains grammar, vocabulary, and speaking — all in your native language.
+            </p>
+
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link to="/auth/sign-up">
+                <button className="px-6 py-3 rounded-xl text-sm font-bold transition-all hover:scale-105 active:scale-95"
+                  style={{ background: 'linear-gradient(135deg, #0EA5C9, #0284C7)', color: 'white', boxShadow: '0 8px 24px rgba(14,165,201,0.35)' }}>
+                  Start Learning Free →
+                </button>
+              </Link>
+              <Link to="/auth/sign-in">
+                <button className="px-6 py-3 rounded-xl text-sm font-semibold transition-all hover:bg-white/10"
+                  style={{ border: '1px solid rgba(255,255,255,0.2)', color: 'rgba(255,255,255,0.8)' }}>
+                  Sign In
+                </button>
+              </Link>
+            </div>
+
+            {/* Stats row */}
+            <div className="mt-10 flex gap-8">
+              {[['10K+', 'Learners'], ['3', 'Languages'], ['500+', 'Lessons']].map(([val, label]) => (
+                <div key={label}>
+                  <div className="text-2xl font-extrabold text-white">{val}</div>
+                  <div className="text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.45)' }}>{label}</div>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* Right — visual card stack */}
+          <motion.div
+            initial={{ opacity: 0, x: 24 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.7, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+            className="relative flex justify-center"
+          >
+            {/* Main card */}
+            <div className="relative w-full max-w-sm rounded-2xl p-6"
+              style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', backdropFilter: 'blur(20px)' }}>
+
+              {/* Card header */}
+              <div className="flex items-center justify-between mb-5">
+                <span className="text-xs font-semibold tracking-wide" style={{ color: '#38BDF8' }}>TODAY'S LESSON</span>
+                <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: 'rgba(245,158,11,0.2)', color: '#FCD34D' }}>Grammar</span>
+              </div>
+
+              <img src="/logo2.png" alt="Bilimly mascot" className="w-40 h-40 object-contain mx-auto my-2 drop-shadow-2xl" />
+
+              <div className="mt-4 space-y-2">
+                {/* Progress bars */}
+                {[['Grammar', 72], ['Vocabulary', 58], ['Speaking', 45]].map(([skill, pct]) => (
+                  <div key={skill} className="flex items-center gap-3">
+                    <span className="text-xs w-20 shrink-0" style={{ color: 'rgba(255,255,255,0.6)' }}>{skill}</span>
+                    <div className="flex-1 h-1.5 rounded-full" style={{ background: 'rgba(255,255,255,0.1)' }}>
+                      <motion.div
+                        className="h-full rounded-full"
+                        style={{ background: 'linear-gradient(90deg, #0EA5C9, #38BDF8)', width: `${pct}%` }}
+                        initial={{ width: 0 }}
+                        animate={{ width: `${pct}%` }}
+                        transition={{ duration: 1, delay: 0.5 + Number(pct) * 0.002 }}
+                      />
+                    </div>
+                    <span className="text-xs w-7 text-right" style={{ color: 'rgba(255,255,255,0.45)' }}>{pct}%</span>
+                  </div>
+                ))}
+              </div>
+
+              {/* XP pill */}
+              <div className="mt-5 flex items-center justify-between px-4 py-2.5 rounded-xl"
+                style={{ background: 'rgba(245,158,11,0.12)', border: '1px solid rgba(245,158,11,0.2)' }}>
+                <span className="text-xs font-semibold" style={{ color: '#FCD34D' }}>⚡ 240 XP earned today</span>
+                <span className="text-xs" style={{ color: 'rgba(255,255,255,0.4)' }}>Level 5</span>
+              </div>
+            </div>
+
+            {/* Floating badge top-right */}
+            <motion.div
+              className="absolute -top-4 -right-4 px-3 py-2 rounded-xl text-xs font-bold shadow-xl"
+              style={{ background: '#0EA5C9', color: 'white' }}
+              animate={{ y: [0, -6, 0] }}
+              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+            >
+              🔥 7 day streak
+            </motion.div>
+          </motion.div>
+        </div>
       </div>
     </section>
   )
 }
-
-

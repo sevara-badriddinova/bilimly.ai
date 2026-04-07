@@ -2,5 +2,109 @@
   "dashboard": "Dashboard",
   "chat": "Chat",
   "signIn": "Sign In",
-  "signOut": "Sign Out"
+  "signOut": "Sign Out",
+  "welcome": "Welcome",
+  "grammar": "Grammar",
+  "vocabulary": "Vocabulary",
+  "listening": "Listening",
+  "speaking": "Speaking",
+  "lessons": "Lessons",
+  "progress": "Progress",
+  "level": "Level",
+  "xp": "XP",
+  "streak": "Streak",
+  "continue": "Continue",
+  "start": "Start",
+  "backTo": "Back to",
+  "completed": "Completed",
+  "locked": "Locked",
+
+  "hero": {
+    "title": "Master English Communication for Global Tech Careers",
+    "subtitle": "AI-powered English learning platform designed for ambitious Uzbek STEM students",
+    "cta": "Start Learning Free",
+    "learnMore": "Learn More"
+  },
+
+  "grammarPage": {
+    "title": "Grammar Lessons",
+    "subtitle": "Master English grammar step by step",
+    "tips": {
+      "title": "Grammar Learning Tips",
+      "tip1": "Practice regularly - even 10 minutes per day helps!",
+      "tip2": "Complete exercises in order for best results",
+      "tip3": "Review your mistakes to learn from them",
+      "tip4": "Try to use new grammar in your own sentences"
+    }
+  },
+
+  "vocabularyPage": {
+    "title": "Vocabulary Lessons",
+    "subtitle": "Expand your professional vocabulary",
+    "tips": {
+      "title": "Vocabulary Learning Tips",
+      "tip1": "Learn words in context, not isolation",
+      "tip2": "Use new words in sentences immediately",
+      "tip3": "Review regularly to improve retention",
+      "tip4": "Focus on high-frequency professional terms"
+    }
+  },
+
+  "listeningPage": {
+    "title": "Listening Practice",
+    "subtitle": "Improve your listening comprehension"
+  },
+
+  "speakingPage": {
+    "title": "Speaking Practice",
+    "subtitle": "Build confidence in spoken English"
+  },
+
+  "chatPage": {
+    "title": "Bilimly AI Coach",
+    "subtitle": "Professional English Communication Training",
+    "welcome": "Welcome to Bilimly AI! I'm your English communication coach and curriculum designer.",
+    "capabilities": "I can help you with:",
+    "grammarFeedback": "Grammar Feedback - Write any English sentence and I'll correct it with detailed analysis",
+    "lessonGeneration": "Lesson Generation - Request a lesson on any grammar topic (e.g., \"Create a lesson for Present Perfect\")",
+    "careerEnglish": "Career English - Practice professional communication for interviews and tech careers",
+    "placeholder": "Type your English practice text here...",
+    "analyzing": "Analyzing...",
+    "send": "Send",
+    "sending": "Sending",
+    "practiceNote": "Practice any English sentence or paragraph for detailed feedback"
+  },
+
+  "auth": {
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "rememberMe": "Remember Me",
+    "forgotPassword": "Forgot Password?",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "signUpLink": "Sign up",
+    "signInLink": "Sign in"
+  },
+
+  "lesson": {
+    "unitComplete": "Unit Complete!",
+    "accuracy": "Accuracy",
+    "correct": "Correct",
+    "earned": "Earned",
+    "backToGrammar": "Back to Grammar",
+    "backToVocabulary": "Back to Vocabulary",
+    "outOfHearts": "Out of Hearts!",
+    "outOfHeartsMessage": "Don't worry, you can try again from where you left off.",
+    "finishUnit": "Finish Unit"
+  },
+
+  "dashboard": {
+    "yourProgress": "Your Progress",
+    "continue": "Continue Learning",
+    "skills": "Skills",
+    "achievements": "Achievements"
+  }
 }
