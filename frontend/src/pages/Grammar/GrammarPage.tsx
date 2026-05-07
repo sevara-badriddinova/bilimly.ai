@@ -1,130 +1,125 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import SkillCard from '../../components/ui/SkillCard';
+import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import { Search, Lock, CheckCircle2, Zap } from "lucide-react";
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { Card, Pill, SectionHeading, Progress } from "@/components/ui-kit";
+import { IconBadge } from "@/components/icon-badge";
+import { LESSONS } from "@/data/lessons";
 
-const UNITS = [
-  {
-    id: 'present-simple',
-    icon: '📅',
-    title: 'Present Simple Tense',
-    subtitle: 'Hozirgi oddiy zamon',
-    desc: 'Learn to talk about habits, facts, and regular actions',
-    lessons: 3,
-    color: '#0EA5C9',
-  },
-  {
-    id: 'past-simple',
-    icon: '⏮️',
-    title: 'Past Simple Tense',
-    subtitle: "O'tgan oddiy zamon",
-    desc: 'Talk about completed actions in the past',
-    lessons: 3,
-    color: '#8B5CF6',
-  },
-  {
-    id: 'present-continuous',
-    icon: '▶️',
-    title: 'Present Continuous',
-    subtitle: 'Hozirgi davomli zamon',
-    desc: 'Talk about actions happening right now',
-    lessons: 3,
-    color: '#10B981',
-  },
-  {
-    id: 'future-tenses',
-    icon: '🔮',
-    title: 'Future Tenses',
-    subtitle: 'Kelasi zamon',
-    desc: 'Talk about future plans and predictions',
-    lessons: 2,
-    color: '#F59E0B',
-  },
-  {
-    id: 'modal-verbs',
-    icon: '🎭',
-    title: 'Modal Verbs',
-    subtitle: "Modal fe'llar",
-    desc: 'Express ability, permission, and obligation',
-    lessons: 3,
-    color: '#EC4899',
-  },
-];
+const LEVEL_KEYS = ["all", "beginner", "intermediate", "advanced"] as const;
+const LEVEL_NAME_MAP: Record<string, (typeof LEVEL_KEYS)[number]> = {
+  "Boshlang'ich": "beginner",
+  "O'rta": "intermediate",
+  "Yuqori": "advanced",
+};
 
-export default function GrammarPage() {
-  const navigate = useNavigate();
+export default function Grammar() {
+  const { t } = useTranslation();
+  const [level, setLevel] = useState<(typeof LEVEL_KEYS)[number]>("all");
+  const [q, setQ] = useState("");
+  const grammarLessons = LESSONS.filter((l) => l.category === "Grammatika");
+  const filtered = grammarLessons.filter((l) => {
+    if (level !== "all" && LEVEL_NAME_MAP[l.level] !== level) return false;
+    if (q && !(l.titleUz + l.title).toLowerCase().includes(q.toLowerCase())) return false;
+    return true;
+  });
+  const completed = grammarLessons.filter((l) => l.status === "completed").length;
 
   return (
-    <div className="p-6 lg:p-10 max-w-5xl mx-auto">
+    <div className="space-y-8">
+      <SectionHeading
+        eyebrow={t("grammar.eyebrow")}
+        title={t("grammar.title")}
+        description={t("grammar.subtitle")}
+      />
 
-      {/* Header */}
-      <motion.div
-        className="mb-8"
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
-      >
-        <div className="flex items-center gap-2 text-xs font-bold tracking-widest uppercase mb-2" style={{ color: '#0EA5C9' }}>
-          <span>✍️</span> Grammar
-        </div>
-        <h1 className="text-2xl lg:text-3xl font-extrabold" style={{ color: '#0D1B2A' }}>
-          Grammar Lessons
-        </h1>
-        <p className="text-sm mt-1" style={{ color: '#4A6280' }}>
-          Master English grammar step by step
-        </p>
-      </motion.div>
-
-      {/* Progress bar */}
-      <motion.div
-        className="rounded-2xl p-5 mb-8"
-        style={{ background: 'white', border: '1px solid rgba(0,0,0,0.07)' }}
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, delay: 0.05 }}
-      >
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-sm font-semibold" style={{ color: '#0D1B2A' }}>Overall Progress</span>
-          <span className="text-xs font-bold" style={{ color: '#0EA5C9' }}>0 / {UNITS.length} units</span>
-        </div>
-        <div className="h-2 rounded-full" style={{ background: '#E2EDF8' }}>
-          <div className="h-full rounded-full w-0" style={{ background: 'linear-gradient(90deg, #0EA5C9, #38BDF8)' }} />
-        </div>
-      </motion.div>
-
-      {/* Units grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {UNITS.map((unit, i) => (
-          <SkillCard
-            key={unit.id}
-            icon={unit.icon}
-            title={unit.title}
-            subtitle={unit.subtitle}
-            desc={unit.desc}
-            meta={`📖 ${unit.lessons} lessons`}
-            color={unit.color}
-            index={i}
-            onClick={() => navigate(`/grammar/${unit.id}`)}
-          />
-        ))}
+      {/* Top stats */}
+      <div className="grid gap-4 sm:grid-cols-3">
+        <Card>
+          <p className="text-xs uppercase tracking-widest text-muted-foreground">{t("grammar.completed")}</p>
+          <p className="text-display mt-2 text-3xl text-primary">{completed} / {grammarLessons.length}</p>
+          <div className="mt-3"><Progress value={Math.round((completed / grammarLessons.length) * 100)} /></div>
+        </Card>
+        <Card>
+          <p className="text-xs uppercase tracking-widest text-muted-foreground">{t("grammar.currentLevel")}</p>
+          <p className="text-display mt-2 text-3xl">{t("levels.beginner")}</p>
+          <p className="mt-1 text-sm text-muted-foreground">{t("grammar.levelHint")}</p>
+        </Card>
+        <Card>
+          <p className="text-xs uppercase tracking-widest text-muted-foreground">{t("grammar.today")}</p>
+          <p className="text-display mt-2 text-3xl">+45 XP</p>
+          <p className="mt-1 text-sm text-muted-foreground">{t("grammar.todayMeta", { n: 2 })}</p>
+        </Card>
       </div>
 
-      {/* Tip banner */}
-      <motion.div
-        className="mt-8 rounded-2xl p-5 flex items-start gap-4"
-        style={{ background: '#0D1B2A' }}
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, delay: 0.3 }}
-      >
-        <span className="text-2xl mt-0.5">💡</span>
-        <div>
-          <h4 className="font-bold text-white text-sm mb-1">Grammar Tip</h4>
-          <p className="text-xs leading-relaxed" style={{ color: 'rgba(255,255,255,0.5)' }}>
-            Start with Present Simple — it's the foundation of English grammar. Practice 10 minutes a day for best results.
-          </p>
+      {/* Filters */}
+      <div className="flex flex-wrap items-center gap-3">
+        <div className="relative flex-1 min-w-[200px]">
+          <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <input
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder={t("grammar.searchPlaceholder")}
+            className="w-full rounded-full border-2 border-foreground/10 bg-card py-2.5 pl-11 pr-4 text-sm focus:border-primary focus:outline-none"
+          />
         </div>
-      </motion.div>
+        <div className="flex flex-wrap gap-2">
+          {LEVEL_KEYS.map((l) => (
+            <button
+              key={l}
+              onClick={() => setLevel(l)}
+              className={`rounded-full border-2 px-4 py-2 text-sm font-medium transition ${
+                level === l
+                  ? "border-primary bg-primary text-primary-foreground"
+                  : "border-foreground/10 bg-card hover:border-primary/40"
+              }`}
+            >
+              {t(`levels.${l}`)}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Lesson grid */}
+      <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+        {filtered.map((l, i) => {
+          const locked = l.status === "locked";
+          const inner = (
+            <Card className={`relative h-full ${locked ? "opacity-60" : "hover:-translate-y-1 hover:border-primary"} ${l.status === "current" ? "border-primary shadow-[6px_6px_0_0_oklch(0.30_0.10_280)]" : ""}`}>
+              <div className="flex items-start justify-between">
+                <IconBadge icon={l.icon} tone={l.status === "current" ? "primary" : l.status === "completed" ? "secondary" : "accent"} size="md" />
+                {locked ? (
+                  <Pill tone="muted"><Lock className="h-3 w-3" /></Pill>
+                ) : l.status === "completed" ? (
+                  <Pill tone="secondary"><CheckCircle2 className="h-3 w-3" /> {t("grammar.statusCompleted")}</Pill>
+                ) : l.status === "current" ? (
+                  <Pill tone="primary">{t("grammar.statusCurrent")}</Pill>
+                ) : (
+                  <Pill tone="accent">{t("grammar.statusNew")}</Pill>
+                )}
+              </div>
+              <h3 className="text-display mt-4 text-xl leading-tight">{l.titleUz}</h3>
+              <p className="mt-1 text-sm italic text-muted-foreground">{l.title}</p>
+              <p className="mt-3 line-clamp-2 text-sm text-muted-foreground">{l.summary}</p>
+              <div className="mt-5 flex items-center gap-2 text-xs text-muted-foreground">
+                <Pill>{t(`levels.${LEVEL_NAME_MAP[l.level] ?? "beginner"}`)}</Pill>
+                <span className="ml-auto inline-flex items-center gap-1">{l.minutes} {t("common.minShort")} · <Zap className="h-3 w-3" />{l.xp}</span>
+              </div>
+            </Card>
+          );
+          return (
+            <motion.div
+              key={l.id}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.04 }}
+            >
+              {locked ? inner : <Link to={`/lessons/${l.id}`}>{inner}</Link>}
+            </motion.div>
+          );
+        })}
+      </div>
     </div>
   );
 }

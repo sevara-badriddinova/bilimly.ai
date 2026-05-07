@@ -1,198 +1,119 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { useAuth } from '../../context/AuthContext';
-import { useProgress } from '../../hooks/useProgress';
-import i18n from '../../i18n';
+import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
+import { Flame, Trophy, BookOpen, Zap, Target, Gem, Star, Crown, type LucideIcon } from "lucide-react";
+import { Card, Pill, SectionHeading, Progress, PrimaryButton } from "@/components/ui-kit";
+import { IconBadge, type IconTone } from "@/components/icon-badge";
+import humoBird from "@/assets/humo-bird.png";
 
-const LANGUAGES = [
-  { code: 'en', flag: '🇬🇧', label: 'English' },
-  { code: 'ru', flag: '🇷🇺', label: 'Русский' },
-  { code: 'uz', flag: '🇺🇿', label: "O'zbek" },
+const ACHIEVEMENTS: { icon: LucideIcon; key: string; params?: Record<string, unknown>; earned: boolean; tone: IconTone }[] = [
+  { icon: Flame, key: "profile.streakChip", params: { n: 7 }, earned: true, tone: "accent" },
+  { icon: Trophy, key: "achievements.first100", earned: true, tone: "primary" },
+  { icon: BookOpen, key: "achievements.tenLessons", earned: true, tone: "secondary" },
+  { icon: Zap, key: "achievements.xp500", earned: true, tone: "accent" },
+  { icon: Target, key: "achievements.perfectWeek", earned: false, tone: "primary" },
+  { icon: Gem, key: "achievements.xp1000", earned: false, tone: "secondary" },
+  { icon: Star, key: "achievements.streak30", earned: false, tone: "accent" },
+  { icon: Crown, key: "achievements.allSections", earned: false, tone: "primary" },
 ];
 
-const LEVEL_THRESHOLDS = [0, 50, 150, 300, 500, 800, 1200];
-function getLevel(xp: number) {
-  let level = 1;
-  for (let i = 0; i < LEVEL_THRESHOLDS.length; i++) {
-    if (xp >= LEVEL_THRESHOLDS[i]) level = i + 1;
-  }
-  return Math.min(level, LEVEL_THRESHOLDS.length);
-}
-function getLevelProgress(xp: number) {
-  const level = getLevel(xp);
-  const current = LEVEL_THRESHOLDS[level - 1] ?? 0;
-  const next = LEVEL_THRESHOLDS[level] ?? LEVEL_THRESHOLDS[level - 1];
-  return Math.round(((xp - current) / (next - current)) * 100);
-}
+const HISTORY = [
+  { date: "7 May", title: "To be / Hozirgi zamon", xp: 40 },
+  { date: "6 May", title: "Salomlashish", xp: 30 },
+  { date: "5 May", title: "Alifbo", xp: 20 },
+  { date: "4 May", title: "Sonlar", xp: 25 },
+  { date: "3 May", title: "Kundalik soʻzlar", xp: 35 },
+];
 
-export default function AccountPage() {
-  const navigate = useNavigate();
-  const { user, logout } = useAuth();
-  const { lessonsCompleted, wordsLearned, xpEarned, currentStreak, longestStreak, resetProgress } = useProgress();
-  const [showReset, setShowReset] = useState(false);
-  const [currentLang, setCurrentLang] = useState(i18n.language?.slice(0, 2) || 'en');
-
-  const name = user?.name || user?.email?.split('@')[0] || 'Student';
-  const email = user?.email || '';
-  const level = getLevel(xpEarned);
-  const levelPct = getLevelProgress(xpEarned);
-  const joined = 'April 2025'; // placeholder — would come from user.createdAt
-
-  const switchLang = (code: string) => {
-    i18n.changeLanguage(code);
-    setCurrentLang(code);
-  };
-
-  const handleReset = () => {
-    resetProgress();
-    setShowReset(false);
-  };
-
-  const STATS = [
-    { icon: '📖', value: String(lessonsCompleted), label: 'Lessons Done' },
-    { icon: '🧠', value: String(wordsLearned), label: 'Words Learned' },
-    { icon: '🔥', value: String(currentStreak), label: 'Current Streak' },
-    { icon: '🏆', value: String(longestStreak), label: 'Best Streak' },
-    { icon: '⚡', value: String(xpEarned), label: 'Total XP' },
-    { icon: '🎯', value: `Level ${level}`, label: 'Current Level' },
-  ];
-
+export default function Profile() {
+  const { t } = useTranslation();
+  const earned = ACHIEVEMENTS.filter((a) => a.earned).length;
   return (
-    <div className="p-4 sm:p-6 lg:p-10 max-w-2xl mx-auto">
-      <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
+    <div className="space-y-8">
+      <SectionHeading eyebrow={t("profile.eyebrow")} title={t("profile.title")} />
 
-        {/* Header */}
-        <div className="flex items-center gap-3 mb-8">
-          <button onClick={() => navigate(-1)} className="text-xs font-semibold hover:opacity-70 transition-opacity" style={{ color: '#0EA5C9' }}>
-            ← Back
-          </button>
-          <h1 className="text-xl font-extrabold" style={{ color: '#0D1B2A' }}>My Account</h1>
-        </div>
-
-        {/* Profile card */}
-        <div className="rounded-2xl p-6 mb-4" style={{ background: '#0D1B2A' }}>
-          <div className="flex items-center gap-4 mb-5">
-            {/* Avatar */}
-            <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl font-black shrink-0"
-              style={{ background: 'linear-gradient(135deg, #0EA5C9, #8B5CF6)', color: 'white' }}>
-              {name[0].toUpperCase()}
+      <Card variant="raised" className="md:p-8">
+        <div className="grid gap-6 md:grid-cols-[auto_1fr_auto] md:items-center">
+          <div className="relative">
+            <div className="grid h-24 w-24 place-items-center rounded-full bg-gradient-to-br from-primary/20 to-secondary/20 text-display text-4xl text-primary">
+              A
             </div>
-            <div className="min-w-0">
-              <h2 className="font-extrabold text-lg text-white truncate">{name}</h2>
-              <p className="text-xs truncate" style={{ color: 'rgba(255,255,255,0.45)' }}>{email}</p>
-              <span className="inline-block text-xs px-2 py-0.5 rounded-full mt-1 font-semibold"
-                style={{ background: 'rgba(14,165,201,0.2)', color: '#38BDF8' }}>
-                {user?.role === 'ADMIN' ? '⭐ Admin' : '🎓 Student'}
-              </span>
+            <img src={humoBird} alt="" width={50} height={50} className="absolute -bottom-2 -right-2 h-12 w-12" />
+          </div>
+          <div>
+            <h2 className="text-display text-3xl">Aziz Karimov</h2>
+            <p className="text-muted-foreground">aziz@example.com</p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              <Pill tone="primary">{t("profile.levelChip", { n: 5 })}</Pill>
+              <Pill tone="accent"><Flame className="h-3 w-3" /> {t("profile.streakChip", { n: 7 })}</Pill>
+              <Pill>{t("profile.beginner")}</Pill>
             </div>
           </div>
-
-          {/* Level progress */}
-          <div className="rounded-xl p-4" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}>
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-bold text-white">Level {level}</span>
-              <span className="text-xs" style={{ color: 'rgba(255,255,255,0.4)' }}>{xpEarned} XP</span>
-            </div>
-            <div className="h-2 rounded-full" style={{ background: 'rgba(255,255,255,0.1)' }}>
-              <motion.div className="h-full rounded-full"
-                style={{ background: 'linear-gradient(90deg, #0EA5C9, #8B5CF6)' }}
-                initial={{ width: 0 }}
-                animate={{ width: `${levelPct}%` }}
-                transition={{ duration: 1, delay: 0.3 }} />
-            </div>
-            <p className="text-xs mt-1" style={{ color: 'rgba(255,255,255,0.3)' }}>
-              {levelPct}% to Level {level + 1}
-            </p>
-          </div>
+          <PrimaryButton>{t("profile.edit")}</PrimaryButton>
         </div>
 
-        {/* Stats grid */}
-        <div className="grid grid-cols-3 gap-3 mb-4">
-          {STATS.map(({ icon, value, label }) => (
-            <div key={label} className="rounded-2xl p-3 sm:p-4 text-center"
-              style={{ background: 'white', border: '1px solid rgba(0,0,0,0.07)' }}>
-              <div className="text-xl mb-1">{icon}</div>
-              <div className="text-base sm:text-lg font-extrabold" style={{ color: '#0D1B2A' }}>{value}</div>
-              <div className="text-xs leading-tight mt-0.5" style={{ color: '#94A3B8' }}>{label}</div>
+        <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
+          {[
+            { n: "240", l: t("profile.xpToday") },
+            { n: "1,840", l: t("profile.xpTotal") },
+            { n: "32", l: t("profile.lessonsDone") },
+            { n: "7", l: t("profile.streakDays") },
+          ].map((s) => (
+            <div key={s.l} className="rounded-2xl border-2 border-foreground/10 bg-background p-4 text-center">
+              <p className="text-display text-2xl text-primary">{s.n}</p>
+              <p className="mt-1 text-xs uppercase tracking-widest text-muted-foreground">{s.l}</p>
             </div>
           ))}
         </div>
+      </Card>
 
-        {/* Language */}
-        <div className="rounded-2xl p-5 mb-4" style={{ background: 'white', border: '1px solid rgba(0,0,0,0.07)' }}>
-          <h3 className="text-sm font-bold mb-3" style={{ color: '#0D1B2A' }}>App Language</h3>
-          <div className="flex gap-2 flex-wrap">
-            {LANGUAGES.map(({ code, flag, label }) => (
-              <button key={code} onClick={() => switchLang(code)}
-                className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all"
-                style={{
-                  background: currentLang === code ? '#0D1B2A' : 'rgba(0,0,0,0.04)',
-                  color: currentLang === code ? 'white' : '#374151',
-                  border: `1px solid ${currentLang === code ? '#0D1B2A' : 'rgba(0,0,0,0.08)'}`,
-                }}>
-                {flag} {label}
-              </button>
-            ))}
-          </div>
+      <Card>
+        <h3 className="text-display text-2xl">{t("profile.skillMastery")}</h3>
+        <div className="mt-5 space-y-4">
+          {[
+            { l: t("nav.grammar"), v: 72 },
+            { l: t("nav.vocabulary"), v: 58 },
+            { l: t("nav.listening"), v: 41 },
+            { l: t("nav.speaking"), v: 35 },
+          ].map((s) => (
+            <Progress key={s.l} value={s.v} label={s.l} />
+          ))}
         </div>
+      </Card>
 
-        {/* Account info */}
-        <div className="rounded-2xl p-5 mb-4" style={{ background: 'white', border: '1px solid rgba(0,0,0,0.07)' }}>
-          <h3 className="text-sm font-bold mb-3" style={{ color: '#0D1B2A' }}>Account Info</h3>
-          <div className="space-y-3">
-            {[
-              { label: 'Email', value: email },
-              { label: 'Member since', value: joined },
-              { label: 'Account type', value: user?.role === 'ADMIN' ? 'Administrator' : 'Student' },
-            ].map(({ label, value }) => (
-              <div key={label} className="flex items-center justify-between py-2"
-                style={{ borderBottom: '1px solid rgba(0,0,0,0.05)' }}>
-                <span className="text-xs font-medium" style={{ color: '#94A3B8' }}>{label}</span>
-                <span className="text-sm font-semibold truncate ml-4" style={{ color: '#0D1B2A' }}>{value}</span>
-              </div>
-            ))}
-          </div>
+      <Card>
+        <h3 className="text-display text-2xl">{t("profile.achievements")}</h3>
+        <p className="mt-1 text-sm text-muted-foreground">{t("profile.achievementsCount", { earned, total: ACHIEVEMENTS.length })}</p>
+        <div className="mt-5 grid grid-cols-3 gap-3 sm:grid-cols-4 lg:grid-cols-8">
+          {ACHIEVEMENTS.map((a, i) => (
+            <motion.div
+              key={a.key}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: i * 0.04 }}
+              whileHover={{ y: -3 }}
+              className={`flex flex-col items-center gap-2 rounded-xl border-2 border-foreground/10 p-3 text-center ${a.earned ? "bg-card" : "opacity-40 grayscale"}`}
+            >
+              <IconBadge icon={a.icon} tone={a.tone} size="md" hover={false} />
+              <span className="line-clamp-2 text-[10px] font-semibold leading-tight">{a.params ? t(a.key, a.params) : t(a.key)}</span>
+            </motion.div>
+          ))}
         </div>
+      </Card>
 
-        {/* Danger zone */}
-        <div className="rounded-2xl p-5 mb-4" style={{ background: 'white', border: '1px solid rgba(239,68,68,0.15)' }}>
-          <h3 className="text-sm font-bold mb-3" style={{ color: '#DC2626' }}>Danger Zone</h3>
-          {!showReset ? (
-            <button onClick={() => setShowReset(true)}
-              className="text-sm font-semibold px-4 py-2 rounded-xl transition-all"
-              style={{ background: 'rgba(239,68,68,0.08)', color: '#DC2626', border: '1px solid rgba(239,68,68,0.2)' }}>
-              Reset Progress
-            </button>
-          ) : (
-            <div className="rounded-xl p-4" style={{ background: 'rgba(239,68,68,0.06)', border: '1px solid rgba(239,68,68,0.2)' }}>
-              <p className="text-sm mb-3" style={{ color: '#DC2626' }}>
-                This will reset all your XP, streaks, and lesson progress. This cannot be undone.
-              </p>
-              <div className="flex gap-2">
-                <button onClick={() => setShowReset(false)}
-                  className="flex-1 py-2 rounded-xl text-sm font-semibold"
-                  style={{ background: 'rgba(0,0,0,0.05)', color: '#374151' }}>
-                  Cancel
-                </button>
-                <button onClick={handleReset}
-                  className="flex-1 py-2 rounded-xl text-sm font-bold"
-                  style={{ background: '#DC2626', color: 'white' }}>
-                  Yes, Reset
-                </button>
+      <Card>
+        <h3 className="text-display text-2xl">{t("profile.history")}</h3>
+        <div className="mt-4 divide-y divide-border">
+          {HISTORY.map((h) => (
+            <div key={h.date} className="flex items-center justify-between py-3">
+              <div>
+                <p className="font-semibold">{h.title}</p>
+                <p className="text-xs text-muted-foreground">{h.date}</p>
               </div>
+              <Pill tone="accent"><Zap className="h-3 w-3" /> +{h.xp} XP</Pill>
             </div>
-          )}
+          ))}
         </div>
-
-        {/* Sign out */}
-        <button
-          onClick={() => { logout(); navigate('/'); }}
-          className="w-full py-3 rounded-2xl text-sm font-bold transition-all hover:scale-[1.01]"
-          style={{ background: '#0D1B2A', color: 'white' }}>
-          Sign Out
-        </button>
-      </motion.div>
+      </Card>
     </div>
   );
 }

@@ -1,12 +1,23 @@
 const API_URL = import.meta.env.VITE_API_URL || '';
 
-export async function registerUser(email: string, password: string){
+async function parseAuthResponse(res: Response) {
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+        throw new Error(data.error || data.message || "Authentication failed");
+    }
+    if (!data.token) {
+        throw new Error("Authentication response did not include a token");
+    }
+    return data as { token: string; message?: string };
+}
+
+export async function registerUser(email: string, password: string, name?: string){
     const res = await fetch(`${API_URL}/api/auth/register`, {
         method: "POST",
         headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({email, password})
+        body: JSON.stringify({email, password, name})
     });
-    return await res.json();
+    return parseAuthResponse(res);
 }
 
 export async function loginUser(email: string, password: string){
@@ -15,7 +26,7 @@ export async function loginUser(email: string, password: string){
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({email, password})
     });
-    return await res.json();
+    return parseAuthResponse(res);
 }
 
 // Fetch current user with authentication token

@@ -1,6 +1,7 @@
 import { StrictMode, lazy, Suspense } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
+import './i18n'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import AppLayout from './layouts/AppLayout'
 import PublicLayout from './layouts/PublicLayout'
@@ -12,18 +13,14 @@ const DashboardPage = lazy(() => import('./pages/DashboardPage'))
 const ChatPage = lazy(() => import('./pages/Chat/ChatPage'))
 const LessonsPage = lazy(() => import('./pages/Lessons/LessonsPage'))
 const LessonViewPage = lazy(() => import('./pages/Lessons/LessonViewPage'))
-const PricingPage = lazy(() => import('./pages/PricingPage'))
 const SignInPage = lazy(() => import('./pages/Auth/SignInPage'))
 const SignUpPage = lazy(() => import('./pages/Auth/SignUpPage'))
 const GrammarPage = lazy(() => import('./pages/Grammar/GrammarPage'))
-const GrammarLessonPage = lazy(() => import('./pages/Grammar/GrammarLessonPage'))
 const VocabularyPage = lazy(() => import('./pages/Vocabulary/VocabularyPage'))
-const VocabularyLessonPage = lazy(() => import('./pages/Vocabulary/VocabularyLessonPage'))
 const SpeakingPage = lazy(() => import('./pages/Speaking/SpeakingPage'))
-const SpeakingLessonPage = lazy(() => import('./pages/Speaking/SpeakingLessonPage'))
 const ListeningPage = lazy(() => import('./pages/Listening/ListeningPage'))
-const ListeningLessonPage = lazy(() => import('./pages/Listening/ListeningLessonPage'))
 const AccountPage = lazy(() => import('./pages/Account/AccountPage'))
+const SettingsPage = lazy(() => import('./pages/SettingsPage'))
 
 function PageLoader() {
   return (
@@ -42,9 +39,12 @@ const router = createBrowserRouter([
     element: <PublicLayout />,
     children: [
       { path: "/", element: wrap(<LandingPage />) },
+      { path: "/signin", element: wrap(<SignInPage />) },
+      { path: "/signup", element: wrap(<SignUpPage />) },
       { path: "/auth/sign-in", element: wrap(<SignInPage />) },
       { path: "/auth/sign-up", element: wrap(<SignUpPage />) },
-      { path: "/pricing", element: wrap(<PricingPage />) },
+      { path: "/lessons", element: wrap(<LessonsPage />) },
+      { path: "/lessons/:id", element: wrap(<LessonViewPage />) },
     ],
   },
   {
@@ -53,19 +53,22 @@ const router = createBrowserRouter([
       {
         element: <AppLayout />,
         children: [
+          { path: "/app", element: wrap(<DashboardPage />) },
+          { path: "/app/coach", element: wrap(<ChatPage />) },
+          { path: "/app/grammar", element: wrap(<GrammarPage />) },
+          { path: "/app/vocabulary", element: wrap(<VocabularyPage />) },
+          { path: "/app/speaking", element: wrap(<SpeakingPage />) },
+          { path: "/app/listening", element: wrap(<ListeningPage />) },
+          { path: "/app/profile", element: wrap(<AccountPage />) },
+          { path: "/app/settings", element: wrap(<SettingsPage />) },
           { path: "/dashboard", element: wrap(<DashboardPage />) },
           { path: "/chat", element: wrap(<ChatPage />) },
-          { path: "/lessons", element: wrap(<LessonsPage />) },
-          { path: "/lessons/:id", element: wrap(<LessonViewPage />) },
           { path: "/grammar", element: wrap(<GrammarPage />) },
-          { path: "/grammar/:unitId", element: wrap(<GrammarLessonPage />) },
           { path: "/vocabulary", element: wrap(<VocabularyPage />) },
-          { path: "/vocabulary/:themeId", element: wrap(<VocabularyLessonPage />) },
           { path: "/speaking", element: wrap(<SpeakingPage />) },
-          { path: "/speaking/:lessonId", element: wrap(<SpeakingLessonPage />) },
           { path: "/listening", element: wrap(<ListeningPage />) },
-          { path: "/listening/:lessonId", element: wrap(<ListeningLessonPage />) },
           { path: "/account", element: wrap(<AccountPage />) },
+          { path: "/settings", element: wrap(<SettingsPage />) },
         ],
       },
     ],
