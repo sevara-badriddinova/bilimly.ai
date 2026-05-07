@@ -100,9 +100,6 @@ export default function Index() {
                 {t("landing.ctaPrimary")}
                 <span className="transition group-hover:translate-x-1">→</span>
               </Link>
-              /* <button className="rounded-full border border-foreground/15 bg-card px-6 py-3.5 text-sm font-semibold hover:bg-muted">
-                {t("landing.ctaSecondary")}
-              </button> */
             </div>
 
             <div className="mt-10 flex items-center gap-8 text-sm">
