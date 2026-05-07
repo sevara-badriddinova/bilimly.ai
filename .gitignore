@@ -29,7 +29,6 @@ logs/
 **/application-secret.properties
 server/target/
 server/target/
-server/src/main/resources/application.properties
 frontend/.env
 node_modules/
 frontend/node_modules/
