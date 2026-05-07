@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Card, Pill, SectionHeading, Progress } from "@/components/ui-kit";
 import { IconBadge } from "@/components/icon-badge";
-import { LESSONS } from "@/data/lessons";
+import { LESSONS, getLessonText } from "@/data/lessons";
 
 const LEVEL_KEYS = ["all", "beginner", "intermediate", "advanced"] as const;
 const LEVEL_NAME_MAP: Record<string, (typeof LEVEL_KEYS)[number]> = {
@@ -15,13 +15,15 @@ const LEVEL_NAME_MAP: Record<string, (typeof LEVEL_KEYS)[number]> = {
 };
 
 export default function Grammar() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const language = i18n.resolvedLanguage || i18n.language;
   const [level, setLevel] = useState<(typeof LEVEL_KEYS)[number]>("all");
   const [q, setQ] = useState("");
   const grammarLessons = LESSONS.filter((l) => l.category === "Grammatika");
   const filtered = grammarLessons.filter((l) => {
     if (level !== "all" && LEVEL_NAME_MAP[l.level] !== level) return false;
-    if (q && !(l.titleUz + l.title).toLowerCase().includes(q.toLowerCase())) return false;
+    const text = getLessonText(l, language);
+    if (q && !(text.title + l.title).toLowerCase().includes(q.toLowerCase())) return false;
     return true;
   });
   const completed = grammarLessons.filter((l) => l.status === "completed").length;
@@ -85,6 +87,7 @@ export default function Grammar() {
       <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
         {filtered.map((l, i) => {
           const locked = l.status === "locked";
+          const text = getLessonText(l, language);
           const inner = (
             <Card className={`relative h-full ${locked ? "opacity-60" : "hover:-translate-y-1 hover:border-primary"} ${l.status === "current" ? "border-primary shadow-[6px_6px_0_0_oklch(0.30_0.10_280)]" : ""}`}>
               <div className="flex items-start justify-between">
@@ -99,9 +102,9 @@ export default function Grammar() {
                   <Pill tone="accent">{t("grammar.statusNew")}</Pill>
                 )}
               </div>
-              <h3 className="text-display mt-4 text-xl leading-tight">{l.titleUz}</h3>
-              <p className="mt-1 text-sm italic text-muted-foreground">{l.title}</p>
-              <p className="mt-3 line-clamp-2 text-sm text-muted-foreground">{l.summary}</p>
+              <h3 className="text-display mt-4 text-xl leading-tight">{text.title}</h3>
+              {language?.slice(0, 2) !== "en" && <p className="mt-1 text-sm italic text-muted-foreground">{l.title}</p>}
+              <p className="mt-3 line-clamp-2 text-sm text-muted-foreground">{text.summary}</p>
               <div className="mt-5 flex items-center gap-2 text-xs text-muted-foreground">
                 <Pill>{t(`levels.${LEVEL_NAME_MAP[l.level] ?? "beginner"}`)}</Pill>
                 <span className="ml-auto inline-flex items-center gap-1">{l.minutes} {t("common.minShort")} · <Zap className="h-3 w-3" />{l.xp}</span>

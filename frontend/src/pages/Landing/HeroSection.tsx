@@ -69,7 +69,7 @@ export default function HeroSection() {
             {/* Stats row */}
             <div className="mt-10 flex gap-8">
               {[
-                ['10K+', t('hero.stats.learners')],
+                ['100+', t('hero.stats.learners')],
                 ['3',    t('hero.stats.languages')],
                 ['500+', t('hero.stats.lessons')],
               ].map(([val, label]) => (

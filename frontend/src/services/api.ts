@@ -11,11 +11,11 @@ async function parseAuthResponse(res: Response) {
     return data as { token: string; message?: string };
 }
 
-export async function registerUser(email: string, password: string, name?: string){
+export async function registerUser(email: string, password: string, name?: string, nativeLanguage: string = "uz"){
     const res = await fetch(`${API_URL}/api/auth/register`, {
         method: "POST",
         headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({email, password, name})
+        body: JSON.stringify({email, password, name, nativeLanguage})
     });
     return parseAuthResponse(res);
 }
@@ -44,4 +44,29 @@ export async function getCurrentUser(token: string){
     }
 
     return await res.json();
+}
+
+export async function sendAiChat(token: string, message: string, systemPrompt?: string) {
+    const res = await fetch(`${API_URL}/api/ai/chat`, {
+        method: "POST",
+        headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ message, systemPrompt })
+    });
+
+    const text = await res.text();
+    if (!res.ok) {
+        let errorMessage = "AI chat failed";
+        try {
+            const data = JSON.parse(text);
+            errorMessage = data.error || data.message || errorMessage;
+        } catch {
+            errorMessage = text || errorMessage;
+        }
+        throw new Error(errorMessage);
+    }
+
+    return text;
 }

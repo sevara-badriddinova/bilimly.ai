@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
 import { Flame, Zap, Lock, Check, GraduationCap } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { LESSONS, type Lesson } from "@/data/lessons";
+import { LESSONS, getLessonCategory, getLessonLevel, getLessonText, type Lesson } from "@/data/lessons";
+import { INITIAL_USER_PROGRESS } from "@/data/progress";
 import { IconBadge } from "@/components/icon-badge";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import humoBird from "@/assets/humo-bird.png";
@@ -19,7 +20,8 @@ const CATEGORY_NAV_KEY: Record<(typeof CATEGORY_KEYS)[number], string> = {
 
 export default function LessonsPage() {
   const { t } = useTranslation();
-  const completed = LESSONS.filter((l) => l.status === "completed").length;
+  const progress = INITIAL_USER_PROGRESS;
+  const completed = progress.completedLessonIds.length;
   const total = LESSONS.length;
   const pct = Math.round((completed / total) * 100);
 
@@ -79,9 +81,9 @@ export default function LessonsPage() {
             <div className="mt-8 flex flex-wrap items-center gap-6 text-sm">
               <Stat n={`${completed}/${total}`} label={t("lessonsPage.completed")} />
               <span className="h-8 w-px bg-border" />
-              <Stat n="240" label={t("dashboard.xpToday")} />
+              <Stat n={String(progress.xpToday)} label={t("dashboard.xpToday")} />
               <span className="h-8 w-px bg-border" />
-              <Stat n="7" label={t("dashboard.streakLabel")} icon={Flame} />
+              <Stat n={String(progress.streakDays)} label={t("dashboard.streakLabel")} icon={Flame} />
             </div>
 
             {/* Progress bar */}
@@ -144,7 +146,19 @@ export default function LessonsPage() {
 
               <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
                 {items.map((lesson) => (
-                  <LessonCard key={lesson.id} lesson={lesson} />
+                  <LessonCard
+                    key={lesson.id}
+                    lesson={{
+                      ...lesson,
+                      status: progress.completedLessonIds.includes(lesson.id)
+                        ? "completed"
+                        : lesson.id === progress.currentLessonId
+                          ? "current"
+                          : lesson.status === "completed"
+                            ? "available"
+                            : lesson.status,
+                    }}
+                  />
                 ))}
               </div>
             </div>
@@ -182,7 +196,7 @@ export default function LessonsPage() {
 
       <footer className="border-t border-border">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-6 py-8 text-sm text-muted-foreground">
-          <span>© 2026 Bilimly.ai · Made with care in Tashkent</span>
+          <span>© 2026 Bilimly.ai · Made with care in Tampa</span>
           <div className="flex gap-6">
             <a href="#" className="hover:text-foreground">Privacy</a>
             <a href="#" className="hover:text-foreground">Terms</a>
@@ -205,7 +219,9 @@ function Stat({ n, label, icon: Icon }: { n: string; label: string; icon?: React
 }
 
 function LessonCard({ lesson }: { lesson: Lesson }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const language = i18n.resolvedLanguage || i18n.language;
+  const text = getLessonText(lesson, language);
   const isLocked = lesson.status === "locked";
   const isCurrent = lesson.status === "current";
   const isCompleted = lesson.status === "completed";
@@ -225,13 +241,13 @@ function LessonCard({ lesson }: { lesson: Lesson }) {
         <StatusBadge status={lesson.status} />
       </div>
 
-      <h3 className="text-display mt-4 text-xl leading-tight">{lesson.titleUz}</h3>
-      <p className="mt-1 text-sm italic text-muted-foreground">{lesson.title}</p>
-      <p className="mt-3 text-sm text-muted-foreground line-clamp-2">{lesson.summary}</p>
+      <h3 className="text-display mt-4 text-xl leading-tight">{text.title}</h3>
+      {language?.slice(0, 2) !== "en" && <p className="mt-1 text-sm italic text-muted-foreground">{lesson.title}</p>}
+      <p className="mt-3 text-sm text-muted-foreground line-clamp-2">{text.summary}</p>
 
       <div className="mt-5 flex flex-wrap items-center gap-3 text-xs">
-        <Tag>{lesson.category}</Tag>
-        <Tag>{lesson.level}</Tag>
+        <Tag>{getLessonCategory(lesson, language)}</Tag>
+        <Tag>{getLessonLevel(lesson, language)}</Tag>
         <span className="ml-auto inline-flex items-center gap-1 text-muted-foreground">
           {lesson.minutes} {t("common.minShort")} · <Zap className="h-3 w-3" />{lesson.xp} XP
         </span>

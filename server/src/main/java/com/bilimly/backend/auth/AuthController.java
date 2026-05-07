@@ -58,6 +58,7 @@ public class AuthController {
         // Sanitize inputs
         String email = inputSanitizer.sanitizeEmail(request.getEmail());
         String name = request.getName() != null ? inputSanitizer.sanitize(request.getName()) : null;
+        String nativeLanguage = normalizeNativeLanguage(request.getNativeLanguage());
 
         // Validate email format after sanitization
         if (email == null || email.isEmpty() || !email.matches("^[a-z0-9@._+-]+$")) {
@@ -74,6 +75,7 @@ public class AuthController {
                 .email(email)
                 .password(passwordEncoder.encode(request.getPassword()))
                 .name(name)
+                .nativeLanguage(nativeLanguage)
                 .role(Role.USER)
                 .build();
 
@@ -153,7 +155,20 @@ public class AuthController {
                 "id", user.getId(),
                 "email", user.getEmail(),
                 "name", user.getName() != null ? user.getName() : "",
+                "nativeLanguage", user.getNativeLanguage() != null ? user.getNativeLanguage() : "uz",
                 "role", user.getRole() != null ? user.getRole().name() : "USER"
         ));
+    }
+
+    private String normalizeNativeLanguage(String nativeLanguage) {
+        if (nativeLanguage == null || nativeLanguage.isBlank()) {
+            return "uz";
+        }
+
+        String normalized = nativeLanguage.trim().toLowerCase();
+        if (!normalized.matches("uz|ru|en")) {
+            return "uz";
+        }
+        return normalized;
     }
 }

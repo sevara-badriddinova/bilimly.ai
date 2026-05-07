@@ -5,6 +5,7 @@ export type User = {
     id: number;
     email: string;
     name?: string;
+    nativeLanguage?: string;
     role: "USER" | "ADMIN";
 };
 
@@ -12,7 +13,7 @@ type AuthContextValue = {
     user: User | null;
     isAuthenticated: boolean;
     isLoading: boolean;
-    login: (token: string, rememberMe?: boolean) => Promise<void>;
+    login: (token: string, rememberMe?: boolean, displayName?: string) => Promise<void>;
     logout: () => void;
     refresh: () => Promise<void>;
 };
@@ -21,6 +22,7 @@ export const AuthContext = createContext<AuthContextValue | null>(null);
 
 // Token storage keys
 const TOKEN_KEY = "auth_token";
+const DISPLAY_NAME_PREFIX = "user_display_name";
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [user, setUser] = useState<User | null>(null);
@@ -29,7 +31,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const isAuthenticated = !!user;
 
     // Fetch user data using token
-    async function fetchUser() {
+    async function fetchUser(displayName?: string) {
         const token = getToken();
         if (!token) {
             setUser(null);
@@ -38,7 +40,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         try {
             const userData = await getCurrentUser(token);
-            setUser(userData);
+            const savedDisplayName = localStorage.getItem(getDisplayNameKey(userData.id));
+            const nextUser = {
+                ...userData,
+                name: userData.name || displayName || savedDisplayName || "",
+            };
+            if (displayName) {
+                localStorage.setItem(getDisplayNameKey(userData.id), displayName);
+            }
+            setUser(nextUser);
         } catch (error) {
             console.error("Failed to fetch user:", error);
             // Token might be expired or invalid
@@ -62,11 +72,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }, []);
 
     // Login: save token and fetch user data
-    const login = async (token: string, rememberMe?: boolean): Promise<void> => {
+    const login = async (token: string, rememberMe?: boolean, displayName?: string): Promise<void> => {
         setIsLoading(true);
         try {
             saveToken(token, rememberMe);
-            await fetchUser();
+            await fetchUser(displayName);
         } finally {
             setIsLoading(false);
         }
@@ -115,4 +125,12 @@ export function getToken(): string | null {
 export function removeToken() {
     localStorage.removeItem(TOKEN_KEY);
     sessionStorage.removeItem(TOKEN_KEY);
+}
+
+export function getUserDisplayName(user: User | null) {
+    return user?.name?.trim() || user?.email?.split("@")[0] || "User";
+}
+
+function getDisplayNameKey(userId: number | string) {
+    return `${DISPLAY_NAME_PREFIX}:${userId}`;
 }

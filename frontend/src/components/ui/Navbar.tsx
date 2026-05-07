@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { Menu, X } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { Button } from "./button";
+import { changeLanguage } from "@/i18n";
 
 export default function Navbar() {
   const { isAuthenticated, logout } = useAuth();
@@ -20,7 +21,7 @@ export default function Navbar() {
   }, []);
 
   const currentLang = i18n.language?.slice(0, 2) || "en";
-  const switchLanguage = (lng: string) => i18n.changeLanguage(lng);
+  const switchLanguage = (lng: string) => changeLanguage(lng);
   const navItems = [
     { label: t("howItWorks.badge", "How it works"), href: "/#how-it-works" },
     { label: t("lessons", "Lessons"), href: isAuthenticated ? "/lessons" : "/#learning-path" },

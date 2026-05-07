@@ -14,44 +14,50 @@ import {
   Gem,
   Star,
   Hand,
-  Type,
   type LucideIcon,
 } from "lucide-react";
 import { Card, Pill, Progress, Stat, PrimaryButton } from "@/components/ui-kit";
 import { IconBadge, type IconTone } from "@/components/icon-badge";
+import { getUserDisplayName, useAuth } from "@/context/AuthContext";
+import { useUserProgress } from "@/data/progress";
+import { LESSONS, getLessonText } from "@/data/lessons";
 import humoBird from "@/assets/humo-bird.png";
 
 const SKILLS = [
-  { id: "grammar", labelKey: "nav.grammar", icon: BookOpen, value: 72, to: "/app/grammar", tone: "primary" as IconTone },
-  { id: "vocab", labelKey: "nav.vocabulary", icon: Sparkles, value: 58, to: "/app/vocabulary", tone: "secondary" as IconTone },
-  { id: "listening", labelKey: "nav.listening", icon: Headphones, value: 41, to: "/app/listening", tone: "accent" as IconTone },
-  { id: "speaking", labelKey: "nav.speaking", icon: Mic, value: 35, to: "/app/speaking", tone: "primary" as IconTone },
-];
-
-const RECENT: { id: string; title: string; titleUz: string; icon: LucideIcon; tone: IconTone; xp: number; timeKey: string }[] = [
-  { id: "03-to-be", title: "Verb 'to be'", titleUz: "'To be' fe'li", icon: Sparkles, tone: "primary", xp: 40, timeKey: "coach.timeToday" },
-  { id: "02-greetings", title: "Greetings", titleUz: "Salomlashish", icon: Hand, tone: "secondary", xp: 30, timeKey: "coach.timeYesterday" },
-  { id: "01-alphabet", title: "Alphabet", titleUz: "Alifbo", icon: Type, tone: "accent", xp: 20, timeKey: "coach.timeDaysAgo" },
+  { id: "grammar", labelKey: "nav.grammar", icon: BookOpen, to: "/app/grammar", tone: "primary" as IconTone },
+  { id: "vocab", labelKey: "nav.vocabulary", icon: Sparkles, to: "/app/vocabulary", tone: "secondary" as IconTone },
+  { id: "listening", labelKey: "nav.listening", icon: Headphones, to: "/app/listening", tone: "accent" as IconTone },
+  { id: "speaking", labelKey: "nav.speaking", icon: Mic, to: "/app/speaking", tone: "primary" as IconTone },
 ];
 
 const ACHIEVEMENTS: { icon: LucideIcon; labelKey: string; labelParams?: Record<string, unknown>; earned: boolean; tone: IconTone }[] = [
-  { icon: Flame, labelKey: "profile.streakChip", labelParams: { n: 7 }, earned: true, tone: "accent" },
-  { icon: Trophy, labelKey: "achievements.first100", earned: true, tone: "primary" },
-  { icon: BookOpen, labelKey: "achievements.tenLessons", earned: true, tone: "secondary" },
+  { icon: Flame, labelKey: "profile.streakChip", labelParams: { n: 7 }, earned: false, tone: "accent" },
+  { icon: Trophy, labelKey: "achievements.first100", earned: false, tone: "primary" },
+  { icon: BookOpen, labelKey: "achievements.tenLessons", earned: false, tone: "secondary" },
   { icon: Target, labelKey: "achievements.perfectWeek", earned: false, tone: "primary" },
   { icon: Gem, labelKey: "achievements.xp1000", earned: false, tone: "secondary" },
   { icon: Star, labelKey: "achievements.streak30", earned: false, tone: "accent" },
 ];
 
 export default function Dashboard() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const { user } = useAuth();
+  const { progress } = useUserProgress(user?.id);
+  const language = i18n.resolvedLanguage || i18n.language;
+  const recentLessons = progress.recentLessons
+    .map((id) => LESSONS.find((lesson) => lesson.id === id))
+    .filter((lesson): lesson is NonNullable<typeof lesson> => Boolean(lesson));
+  const dailyGoalProgress = progress.dailyGoalXp > 0 ? Math.round((progress.xpToday / progress.dailyGoalXp) * 100) : 0;
+  const dailyGoalRemaining = Math.max(progress.dailyGoalXp - progress.xpToday, 0);
+  const displayName = getUserDisplayName(user);
+
   return (
     <div className="space-y-8">
       {/* Welcome header */}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <p className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-widest text-primary">
-            {t("dashboard.greeting", { name: "Aziz" })} <Hand className="h-3.5 w-3.5" />
+            {t("dashboard.greeting", { name: displayName })} <Hand className="h-3.5 w-3.5" />
           </p>
           <h1 className="text-display mt-2 text-3xl leading-tight md:text-4xl">
             {t("dashboard.title")}
@@ -60,12 +66,12 @@ export default function Dashboard() {
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-2">
             <Flame className="h-5 w-5 text-accent-foreground" />
-            <Stat n="7" label={t("dashboard.streak")} />
+            <Stat n={String(progress.streakDays)} label={t("dashboard.streak")} />
           </div>
           <span className="h-10 w-px bg-border" />
-          <Stat n="240" label={t("dashboard.xpToday")} accent />
+          <Stat n={String(progress.xpToday)} label={t("dashboard.xpToday")} accent />
           <span className="h-10 w-px bg-border" />
-          <Stat n="5" label={t("dashboard.level")} />
+          <Stat n={String(progress.level)} label={t("dashboard.level")} />
         </div>
       </div>
 
@@ -83,9 +89,9 @@ export default function Dashboard() {
           <h2 className="text-display mt-4 text-2xl md:text-3xl">{t("dashboard.continueTitle")}</h2>
           <p className="mt-2 text-muted-foreground">{t("dashboard.continueMeta")}</p>
           <div className="mt-5 max-w-sm">
-            <Progress value={60} label={t("dashboard.lessonProgress")} />
+            <Progress value={progress.lessonProgress} label={t("dashboard.lessonProgress")} />
           </div>
-          <Link to="/lessons/03-to-be" className="mt-6 inline-block">
+          <Link to={`/lessons/${progress.currentLessonId}`} className="mt-6 inline-block">
             <PrimaryButton>
               {t("dashboard.continueBadge")} <ArrowRight className="h-4 w-4" />
             </PrimaryButton>
@@ -100,10 +106,10 @@ export default function Dashboard() {
             <Target className="h-4 w-4 text-primary" />
             <span className="text-xs font-semibold uppercase tracking-widest text-primary">{t("dashboard.dailyGoal")}</span>
           </div>
-          <p className="text-display mt-3 text-3xl">240 / 300 XP</p>
-          <p className="mt-1 text-sm text-muted-foreground">{t("dashboard.goalRemaining", { xp: 60 })}</p>
+          <p className="text-display mt-3 text-3xl">{progress.xpToday} / {progress.dailyGoalXp} XP</p>
+          <p className="mt-1 text-sm text-muted-foreground">{t("dashboard.goalRemaining", { xp: dailyGoalRemaining })}</p>
           <div className="mt-4">
-            <Progress value={80} />
+            <Progress value={dailyGoalProgress} />
           </div>
         </Card>
 
@@ -146,7 +152,7 @@ export default function Dashboard() {
                     <IconBadge icon={s.icon} tone={s.tone} size="md" hover={false} />
                     <p className="text-display mt-4 text-lg">{t(s.labelKey)}</p>
                     <div className="mt-3">
-                      <Progress value={s.value} />
+                      <Progress value={progress.skills[s.id as keyof typeof progress.skills]} />
                     </div>
                   </Card>
                 </motion.div>
@@ -165,23 +171,28 @@ export default function Dashboard() {
           </Link>
         </div>
         <div className="grid gap-3">
-          {RECENT.map((r) => (
+          {recentLessons.map((r) => (
             <Link key={r.id} to={`/lessons/${r.id}`}>
               <motion.div whileHover={{ x: 4 }}>
                 <Card className="flex items-center gap-4 hover:border-primary">
                   <IconBadge icon={r.icon} tone={r.tone} size="md" hover={false} />
                   <div className="flex-1">
-                    <p className="text-display text-lg leading-tight">{r.titleUz}</p>
-                    <p className="text-sm italic text-muted-foreground">{r.title}</p>
+                    <p className="text-display text-lg leading-tight">{getLessonText(r, language).title}</p>
+                    {language?.slice(0, 2) !== "en" && <p className="text-sm italic text-muted-foreground">{r.title}</p>}
                   </div>
                   <div className="text-right">
                     <Pill tone="accent"><Zap className="h-3 w-3" /> {r.xp} XP</Pill>
-                    <p className="mt-1 text-xs text-muted-foreground">{t(r.timeKey)}</p>
+                    <p className="mt-1 text-xs text-muted-foreground">{t("coach.timeToday")}</p>
                   </div>
                 </Card>
               </motion.div>
             </Link>
           ))}
+          {recentLessons.length === 0 && (
+            <Card className="text-sm text-muted-foreground">
+              {t("dashboard.noRecent", "No lessons completed yet. Start your first lesson to see progress here.")}
+            </Card>
+          )}
         </div>
       </div>
     </div>

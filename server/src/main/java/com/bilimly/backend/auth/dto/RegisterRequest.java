@@ -18,4 +18,7 @@ public class RegisterRequest {
 
     @Size(max = 100, message = "Name must be less than 100 characters")
     private String name;
+
+    @Size(max = 10, message = "Native language must be less than 10 characters")
+    private String nativeLanguage;
 }

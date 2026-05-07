@@ -4,18 +4,36 @@ import { resources, supportedLanguages } from "./resources";
 
 const STORAGE_KEY = "bilimly.lang";
 
+function getInitialLanguage() {
+  if (typeof window === "undefined") return "en";
+  try {
+    const saved = window.localStorage.getItem(STORAGE_KEY);
+    if (saved && supportedLanguages.includes(saved as never)) return saved;
+
+    const nav = window.navigator?.language?.slice(0, 2).toLowerCase();
+    if (nav && supportedLanguages.includes(nav as never)) return nav;
+  } catch {
+    /* ignore */
+  }
+  return "en";
+}
+
 if (!i18n.isInitialized) {
   i18n
     .use(initReactI18next)
     .init({
       resources: resources as never,
-      lng: "en",
+      lng: getInitialLanguage(),
       fallbackLng: "en",
       supportedLngs: supportedLanguages,
       interpolation: { escapeValue: false },
       returnNull: false,
       react: { useSuspense: false },
     });
+
+  if (typeof document !== "undefined") {
+    document.documentElement.lang = getInitialLanguage();
+  }
 }
 
 export function hydrateLanguageFromStorage() {

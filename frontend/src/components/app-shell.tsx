@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import humoBird from "@/assets/humo-bird.png";
 import { LanguageSwitcher } from "@/components/language-switcher";
+import { getUserDisplayName, useAuth } from "@/context/AuthContext";
 
 type NavItem = {
   to: string;
@@ -60,6 +61,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 function Sidebar() {
   const { pathname } = useLocation();
   const { t } = useTranslation();
+  const { user } = useAuth();
+  const displayName = getUserDisplayName(user);
+
   return (
     <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-r border-border bg-card/40 px-4 py-6 md:flex">
       <Link to="/" className="flex items-center gap-2 px-2">
@@ -83,6 +87,12 @@ function Sidebar() {
 
       <div className="mt-4 px-1">
         <LanguageSwitcher className="w-full justify-center" />
+      </div>
+
+      <div className="mt-4 rounded-2xl border-2 border-foreground/10 bg-card p-4">
+        <p className="text-xs uppercase tracking-widest text-muted-foreground">{t("nav.profile")}</p>
+        <p className="text-display mt-1 truncate text-lg leading-tight">{displayName}</p>
+        <p className="truncate text-xs text-muted-foreground">{user?.email}</p>
       </div>
 
       <div className="relative mt-4 overflow-hidden rounded-2xl border-2 border-foreground/10 bg-card p-4">

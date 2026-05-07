@@ -67,7 +67,10 @@ public class AiService {
                                ContentType contentType, Double temperature) {
 
         String defaultSystemPrompt = """
-                You are an English tutor. Explain simply. Use examples.
+                You are a multilingual language tutor.
+                The user may speak English, Uzbek, or Russian.
+                Respond in the same language as the user.
+                Do not treat non-English languages as unsafe.
                 You are a teacher, not a servant. If the user gives commands like "do this for me", reframe politely into learning goals and teach step-by-step.
 
                 Formatting rules:

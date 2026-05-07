@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router-dom";
+import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Zap, Flame, Check, X, Lightbulb, ArrowLeft } from "lucide-react";
@@ -7,6 +7,27 @@ import { IconBadge } from "@/components/icon-badge";
 import ikatBorder from "@/assets/ikat-border.png";
 import humoBird from "@/assets/humo-bird.png";
 import anorMotif from "@/assets/anor-motif.png";
+
+export const Route = createFileRoute("/lessons/$lessonId")({
+  loader: ({ params }) => {
+    const lesson = getLesson(params.lessonId);
+    if (!lesson) throw notFound();
+    return { lesson };
+  },
+  head: ({ loaderData }) => ({
+    meta: loaderData
+      ? [
+          { title: `${loaderData.lesson.title} — Bilimly.ai` },
+          { name: "description", content: loaderData.lesson.summary },
+          { property: "og:title", content: `${loaderData.lesson.title} — Bilimly.ai` },
+          { property: "og:description", content: loaderData.lesson.summary },
+        ]
+      : [{ title: "Dars — Bilimly.ai" }],
+  }),
+  errorComponent: ({ error }) => <ErrorView message={error.message} />,
+  notFoundComponent: () => <NotFoundView />,
+  component: LessonPage,
+});
 
 function ErrorView({ message }: { message: string }) {
   const { t } = useTranslation();
@@ -29,12 +50,10 @@ function NotFoundView() {
   );
 }
 
-export default function LessonPage() {
+function LessonPage() {
   const { t, i18n } = useTranslation();
   const language = i18n.resolvedLanguage || i18n.language;
-  const { id = "" } = useParams();
-  const lesson = getLesson(id);
-  if (!lesson) return <NotFoundView />;
+  const { lesson } = Route.useLoaderData();
   const next = getNextLesson(lesson.id);
   const prev = getPrevLesson(lesson.id);
   const lessonText = getLessonText(lesson, language);
@@ -225,7 +244,8 @@ export default function LessonPage() {
               </Link>
               {next && (
                 <Link
-                  to={`/lessons/${next.id}`}
+                  to="/lessons/$lessonId"
+                  params={{ lessonId: next.id }}
                   className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-[4px_4px_0_0_oklch(0.30_0.10_280)] transition hover:translate-x-[-2px] hover:translate-y-[-2px]"
                 >
                   {t("lessonPlayer.nextLesson")}: {getLessonText(next, language).title} →
@@ -239,7 +259,8 @@ export default function LessonPage() {
         <div className="mt-10 flex items-center justify-between gap-4">
           {prev ? (
             <Link
-              to={`/lessons/${prev.id}`}
+              to="/lessons/$lessonId"
+              params={{ lessonId: prev.id }}
               className="group flex-1 rounded-2xl border-2 border-foreground/10 bg-card p-4 transition hover:border-primary"
             >
               <div className="text-xs uppercase tracking-widest text-muted-foreground">{t("lessonPlayer.prev")}</div>
@@ -248,7 +269,8 @@ export default function LessonPage() {
           ) : <div className="flex-1" />}
           {next ? (
             <Link
-              to={`/lessons/${next.id}`}
+              to="/lessons/$lessonId"
+              params={{ lessonId: next.id }}
               className="group flex-1 rounded-2xl border-2 border-foreground/10 bg-card p-4 text-right transition hover:border-primary"
             >
               <div className="text-xs uppercase tracking-widest text-muted-foreground">{t("lessonPlayer.next")}</div>

@@ -18,7 +18,7 @@ public class InputSanitizer {
 
     // Pattern for detecting SQL injection attempts
     private static final Pattern SQL_INJECTION_PATTERN = Pattern.compile(
-        "(;\\s*(DROP|DELETE|INSERT|UPDATE|EXEC|EXECUTE)\\s)|(--)|(/\\*.*?\\*/)|('\\s*(OR|AND)\\s*')",
+        "(;\\s*(DROP|DELETE|INSERT|UPDATE|EXEC|EXECUTE)\\b)|(/\\*.*?\\*/)|(\\b(OR|AND)\\b\\s+\\d+\\s*=\\s*\\d+)",
         Pattern.CASE_INSENSITIVE
     );
 

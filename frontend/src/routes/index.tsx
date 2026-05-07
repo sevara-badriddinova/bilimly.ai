@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Flame, Zap, GraduationCap } from "lucide-react";
@@ -7,9 +7,23 @@ import ikatBorder from "@/assets/ikat-border.png";
 import anorMotif from "@/assets/anor-motif.png";
 import { LanguageSwitcher } from "@/components/language-switcher";
 
-const LANGS = ["O'zbek", "Русский", "English"] as const;
+export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: "Bilimly — Learn English in Uzbek with AI" },
+      {
+        name: "description",
+        content:
+          "Your personal AI tutor that explains English grammar, vocabulary, and speaking in Uzbek, Russian or English.",
+      },
+    ],
+  }),
+  component: Index,
+});
 
-export default function Index() {
+const LANGS = ["Uzbek", "Русский", "English"] as const;
+
+function Index() {
   const { t } = useTranslation();
   const [langIdx, setLangIdx] = useState(0);
   useEffect(() => {

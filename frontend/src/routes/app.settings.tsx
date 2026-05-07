@@ -1,5 +1,5 @@
+import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Bell, Globe, Lock, User as UserIcon, Moon, Sun, LogOut } from "lucide-react";
 import { Card, SectionHeading } from "@/components/ui-kit";
@@ -7,14 +7,17 @@ import { changeLanguage } from "@/i18n";
 import { supportedLanguages } from "@/i18n/resources";
 import { getUserDisplayName, useAuth } from "@/context/AuthContext";
 
-export default function Settings() {
+export const Route = createFileRoute("/app/settings")({
+  head: () => ({ meta: [{ title: "Sozlamalar — Bilimly.ai" }] }),
+  component: Settings,
+});
+
+function Settings() {
   const { t, i18n } = useTranslation();
   const { user, logout } = useAuth();
-  const navigate = useNavigate();
   const lang = (i18n.resolvedLanguage || i18n.language || "en").slice(0, 2);
   const [dark, setDark] = useState(false);
   const [notifs, setNotifs] = useState({ daily: true, streak: true, marketing: false });
-  const displayName = getUserDisplayName(user);
   const nativeLanguageLabel = getLanguageLabel(user?.nativeLanguage || "uz");
 
   return (
@@ -22,7 +25,7 @@ export default function Settings() {
       <SectionHeading eyebrow={t("settings.eyebrow")} title={t("settings.title")} />
 
       <Group icon={UserIcon} title={t("settings.account")}>
-        <Row label={t("settings.accountName")} value={displayName} />
+        <Row label={t("settings.accountName")} value={getUserDisplayName(user)} />
         <Row label={t("settings.accountEmail")} value={user?.email || ""} />
         <Row label={t("settings.nativeLanguage", "Native language")} value={nativeLanguageLabel} />
         <Row label={t("settings.accountPassword")} value="••••••••" action={t("settings.accountChange")} />
@@ -77,13 +80,7 @@ export default function Settings() {
           <p className="text-display text-lg">{t("settings.signOutTitle")}</p>
           <p className="text-sm text-muted-foreground">{t("settings.signOutBody")}</p>
         </div>
-        <button
-          onClick={() => {
-            logout();
-            navigate("/signin", { replace: true });
-          }}
-          className="inline-flex items-center gap-2 rounded-full border-2 border-destructive/30 bg-destructive/5 px-5 py-2.5 text-sm font-semibold text-destructive transition hover:bg-destructive/10"
-        >
+        <button onClick={logout} className="inline-flex items-center gap-2 rounded-full border-2 border-destructive/30 bg-destructive/5 px-5 py-2.5 text-sm font-semibold text-destructive transition hover:bg-destructive/10">
           <LogOut className="h-4 w-4" /> {t("settings.signOut")}
         </button>
       </Card>
