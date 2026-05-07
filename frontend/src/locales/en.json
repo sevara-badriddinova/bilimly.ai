@@ -1,110 +1,204 @@
 {
-  "dashboard": "Dashboard",
-  "chat": "Chat",
-  "signIn": "Sign In",
-  "signOut": "Sign Out",
-  "welcome": "Welcome",
-  "grammar": "Grammar",
-  "vocabulary": "Vocabulary",
-  "listening": "Listening",
-  "speaking": "Speaking",
-  "lessons": "Lessons",
-  "progress": "Progress",
-  "level": "Level",
-  "xp": "XP",
-  "streak": "Streak",
-  "continue": "Continue",
-  "start": "Start",
-  "backTo": "Back to",
-  "completed": "Completed",
-  "locked": "Locked",
+"dashboard": {
+"label": "Dashboard",
+"yourProgress": "Your Progress",
+"continue": "Continue Learning",
+"skills": "Skills",
+"achievements": "Achievements"
+},
 
-  "hero": {
-    "title": "Master English Communication for Global Tech Careers",
-    "subtitle": "AI-powered English learning platform designed for ambitious Uzbek STEM students",
-    "cta": "Start Learning Free",
-    "learnMore": "Learn More"
-  },
+"chat": "Chat",
+"signIn": "Sign In",
+"signOut": "Sign Out",
+"welcome": "Welcome",
 
-  "grammarPage": {
-    "title": "Grammar Lessons",
-    "subtitle": "Master English grammar step by step",
-    "tips": {
-      "title": "Grammar Learning Tips",
-      "tip1": "Practice regularly - even 10 minutes per day helps!",
-      "tip2": "Complete exercises in order for best results",
-      "tip3": "Review your mistakes to learn from them",
-      "tip4": "Try to use new grammar in your own sentences"
-    }
-  },
+"grammar": "Grammar",
+"vocabulary": "Vocabulary",
+"listening": "Listening",
+"speaking": "Speaking",
 
-  "vocabularyPage": {
-    "title": "Vocabulary Lessons",
-    "subtitle": "Expand your professional vocabulary",
-    "tips": {
-      "title": "Vocabulary Learning Tips",
-      "tip1": "Learn words in context, not isolation",
-      "tip2": "Use new words in sentences immediately",
-      "tip3": "Review regularly to improve retention",
-      "tip4": "Focus on high-frequency professional terms"
-    }
-  },
+"lessons": "Lessons",
+"progress": "Progress",
+"level": "Level",
+"xp": "XP",
+"streak": "Streak",
 
-  "listeningPage": {
-    "title": "Listening Practice",
-    "subtitle": "Improve your listening comprehension"
-  },
+"continue": "Continue",
+"start": "Start",
+"backTo": "Back to",
 
-  "speakingPage": {
-    "title": "Speaking Practice",
-    "subtitle": "Build confidence in spoken English"
-  },
+"completed": "Completed",
+"locked": "Locked",
 
-  "chatPage": {
-    "title": "Bilimly AI Coach",
-    "subtitle": "Professional English Communication Training",
-    "welcome": "Welcome to Bilimly AI! I'm your English communication coach and curriculum designer.",
-    "capabilities": "I can help you with:",
-    "grammarFeedback": "Grammar Feedback - Write any English sentence and I'll correct it with detailed analysis",
-    "lessonGeneration": "Lesson Generation - Request a lesson on any grammar topic (e.g., \"Create a lesson for Present Perfect\")",
-    "careerEnglish": "Career English - Practice professional communication for interviews and tech careers",
-    "placeholder": "Type your English practice text here...",
-    "analyzing": "Analyzing...",
-    "send": "Send",
-    "sending": "Sending",
-    "practiceNote": "Practice any English sentence or paragraph for detailed feedback"
-  },
+"hero": {
+"badge": "Learn with AI",
+"title": "Master English for a Global Tech Career",
+"subtitle": "An AI-powered English learning platform for ambitious STEM students from Uzbekistan",
+"cta": "Start Free →",
+"learnMore": "Learn More",
 
-  "auth": {
-    "signIn": "Sign In",
-    "signUp": "Sign Up",
-    "email": "Email",
-    "password": "Password",
-    "confirmPassword": "Confirm Password",
-    "rememberMe": "Remember Me",
-    "forgotPassword": "Forgot Password?",
-    "noAccount": "Don't have an account?",
-    "hasAccount": "Already have an account?",
-    "signUpLink": "Sign up",
-    "signInLink": "Sign in"
-  },
+"titleLine1": "Learn English",
+"titleLine2": "in Uzbek",
+"titleLine3": "with AI",
 
-  "lesson": {
-    "unitComplete": "Unit Complete!",
-    "accuracy": "Accuracy",
-    "correct": "Correct",
-    "earned": "Earned",
-    "backToGrammar": "Back to Grammar",
-    "backToVocabulary": "Back to Vocabulary",
-    "outOfHearts": "Out of Hearts!",
-    "outOfHeartsMessage": "Don't worry, you can try again from where you left off.",
-    "finishUnit": "Finish Unit"
-  },
+"mainSubtitle": "Your personal AI tutor explains grammar, vocabulary, and speaking practice in your native language.",
 
-  "dashboard": {
-    "yourProgress": "Your Progress",
-    "continue": "Continue Learning",
-    "skills": "Skills",
-    "achievements": "Achievements"
-  }
+"stats": {
+"learners": "Learners",
+"languages": "Languages",
+"lessons": "Lessons"
+},
+
+"card": {
+"todaysLesson": "TODAY'S LESSON",
+"xpEarned": "⚡ 240 XP earned today",
+"level": "Level 5",
+"streak": "🔥 7 day streak"
+}
+},
+
+"howItWorks": {
+"badge": "How It Works",
+
+"title": "Three Steps to Fluency",
+
+"subtitle": "Learning English has never been this easy — or this fun.",
+
+"step1": {
+"title": "Chat with AI in 3 Languages",
+"desc": "Ask anything about English and get clear explanations in Uzbek, Russian, or English."
+},
+
+"step2": {
+"title": "Learn Step by Step",
+"desc": "Follow structured lessons in grammar, vocabulary, and speaking. Built for Uzbek learners."
+},
+
+"step3": {
+"title": "Track Your Progress",
+"desc": "Earn XP, level up, and watch your English improve every day."
+},
+
+"cta": {
+"title": "Ready to Start?",
+"subtitle": "Join thousands of Uzbek learners improving their English every day.",
+"button": "Start Free →"
+}
+},
+
+"grammarPage": {
+"title": "Grammar Lessons",
+
+"subtitle": "Master English grammar step by step",
+
+"tips": {
+"title": "Grammar Learning Tips",
+
+"tip1": "Practice regularly — even 10 minutes a day helps!",
+
+"tip2": "Complete exercises in order for the best results",
+
+"tip3": "Review your mistakes and learn from them",
+
+"tip4": "Try using new grammar in your own sentences"
+}
+},
+
+"vocabularyPage": {
+"title": "Vocabulary Lessons",
+
+"subtitle": "Expand your professional vocabulary",
+
+"tips": {
+"title": "Vocabulary Learning Tips",
+
+"tip1": "Learn words in context, not in isolation",
+
+"tip2": "Use new words in sentences immediately",
+
+"tip3": "Review regularly to remember better",
+
+"tip4": "Focus on commonly used professional terms"
+}
+},
+
+"listeningPage": {
+"title": "Listening Practice",
+"subtitle": "Improve your listening comprehension"
+},
+
+"speakingPage": {
+"title": "Speaking Practice",
+"subtitle": "Build confidence speaking English"
+},
+
+"chatPage": {
+"title": "Bilimly AI Coach",
+
+"subtitle": "Professional English Practice",
+
+"welcome": "Welcome to Bilimly AI! I'm your AI assistant for learning English.",
+
+"capabilities": "I can help you with:",
+
+"grammarFeedback": "Grammar feedback — write any English sentence and I’ll correct it with detailed explanations",
+
+"lessonGeneration": "Lesson creation — ask for a lesson on any grammar topic, for example: ‘Create a lesson about Present Perfect’",
+
+"careerEnglish": "Career English — practice English for interviews and tech careers",
+
+"placeholder": "Type English text here for practice...",
+
+"analyzing": "Analyzing...",
+
+"send": "Send",
+
+"sending": "Sending...",
+
+"practiceNote": "Practice any English sentence or paragraph to receive detailed feedback"
+},
+
+"auth": {
+"signIn": "Sign In",
+"signUp": "Sign Up",
+"createAccount": "Create Account",
+"signInSubtitle": "Welcome back to Bilimly.ai",
+"signUpSubtitle": "Start learning with Bilimly.ai",
+"email": "Email",
+"password": "Password",
+"fullName": "Full Name",
+"rememberMe": "Remember me",
+"forgotPassword": "Forgot password?",
+"noAccount": "No account?",
+"hasAccount": "Already have an account?",
+"createOne": "Create one",
+"signUpLink": "Sign Up",
+"signInLink": "Sign In",
+"signingIn": "Signing in...",
+"creatingAccount": "Creating account...",
+"accountCreated": "✓ Account created successfully! Redirecting...",
+"loginFailed": "Login failed. Please try again.",
+"registrationFailed": "Registration failed. Please try again.",
+"genericError": "An error occurred. Please try again."
+},
+
+"lesson": {
+"unitComplete": "Unit Complete!",
+
+"accuracy": "Accuracy",
+
+"correct": "Correct",
+
+"earned": "Earned",
+
+"backToGrammar": "Back to Grammar",
+
+"backToVocabulary": "Back to Vocabulary",
+
+"outOfHearts": "Out of hearts!",
+
+"outOfHeartsMessage": "Don’t worry, you can try again from where you left off.",
+
+"finishUnit": "Finish Unit"
+}
 }
