@@ -33,63 +33,63 @@ A complete, production-ready AI response caching system for your Spring Boot bac
 ### Core Components
 
 1. **`CacheKeyBuilder.java`**
-   - Builds deterministic cache keys
-   - Normalizes prompts (trim, lowercase, collapse spaces)
-   - SHA-256 hashing for uniqueness
-   - Prevents cache key collisions
+    - Builds deterministic cache keys
+    - Normalizes prompts (trim, lowercase, collapse spaces)
+    - SHA-256 hashing for uniqueness
+    - Prevents cache key collisions
 
 2. **`AiCacheService.java`** (Interface)
-   - Defines cache operations (get, put, evict, clear)
-   - Abstraction for multiple implementations
-   - Supports Optional returns for null safety
+    - Defines cache operations (get, put, evict, clear)
+    - Abstraction for multiple implementations
+    - Supports Optional returns for null safety
 
 3. **`InMemoryAiCacheService.java`**
-   - In-memory cache using ConcurrentHashMap
-   - Good for: development, single-server
-   - Auto-enabled by default
-   - TTL enforcement with expiration checking
+    - In-memory cache using ConcurrentHashMap
+    - Good for: development, single-server
+    - Auto-enabled by default
+    - TTL enforcement with expiration checking
 
 4. **`RedisAiCacheService.java`**
-   - Redis-backed cache implementation
-   - Good for: production, multi-server
-   - Persistent across restarts
-   - Shared cache between servers
-   - Automatic TTL with Redis expiration
+    - Redis-backed cache implementation
+    - Good for: production, multi-server
+    - Persistent across restarts
+    - Shared cache between servers
+    - Automatic TTL with Redis expiration
 
 5. **`CacheTtlStrategy.java`**
-   - Determines cache duration by content type
-   - Temperature-based TTL calculation
-   - Cache eligibility rules
-   - Conservative TTL strategy
+    - Determines cache duration by content type
+    - Temperature-based TTL calculation
+    - Cache eligibility rules
+    - Conservative TTL strategy
 
 ### Updated Files
 
 6. **`AiService.java`** (Enhanced)
-   - Added cache-before-provider pattern
-   - New `chatWithCache()` method
-   - Cache hit/miss logging
-   - Manual eviction support
-   - Backward compatible (existing code works)
+    - Added cache-before-provider pattern
+    - New `chatWithCache()` method
+    - Cache hit/miss logging
+    - Manual eviction support
+    - Backward compatible (existing code works)
 
 7. **`application.properties`** (Updated)
-   - Cache configuration section
-   - Redis connection settings
-   - Enable/disable toggle
+    - Cache configuration section
+    - Redis connection settings
+    - Enable/disable toggle
 
 ### Documentation
 
 8. **`README.md`** (in cache package)
-   - Complete guide with examples
-   - Configuration instructions
-   - TTL strategies
-   - Performance metrics
-   - Security considerations
+    - Complete guide with examples
+    - Configuration instructions
+    - TTL strategies
+    - Performance metrics
+    - Security considerations
 
 9. **`AI_CACHE_QUICKSTART.md`**
-   - 5-minute setup guide
-   - Quick reference
-   - Common use cases
-   - Testing examples
+    - 5-minute setup guide
+    - Quick reference
+    - Common use cases
+    - Testing examples
 
 10. **`COMMON_MISTAKES.md`**
     - 10 common mistakes with solutions
@@ -117,13 +117,13 @@ Request → Check Cache → Hit? → Return cached
 
 ### 2. Content Type Strategy
 
-| Type | TTL | Use Case |
-|------|-----|----------|
-| VOCABULARY | 30 days | Word definitions |
-| GRAMMAR | 30 days | Grammar rules |
-| EXERCISE | 7 days | Exercise solutions |
-| GENERAL_CHAT | 1 hour | Q&A |
-| PERSONALIZED | No cache | User-specific |
+| Type         | TTL      | Use Case           |
+|--------------|----------|--------------------|
+| VOCABULARY   | 30 days  | Word definitions   |
+| GRAMMAR      | 30 days  | Grammar rules      |
+| EXERCISE     | 7 days   | Exercise solutions |
+| GENERAL_CHAT | 1 hour   | Q&A                |
+| PERSONALIZED | No cache | User-specific      |
 
 ### 3. Intelligent TTL
 
@@ -143,6 +143,7 @@ Request → Check Cache → Hit? → Return cached
 ### 5. Dual Implementation
 
 **In-Memory (Default):**
+
 - ✅ Zero setup
 - ✅ Fast
 - ✅ Good for development
@@ -150,6 +151,7 @@ Request → Check Cache → Hit? → Return cached
 - ❌ Not shared between servers
 
 **Redis (Production):**
+
 - ✅ Persistent
 - ✅ Shared across servers
 - ✅ High performance
@@ -217,6 +219,7 @@ docker run -d -p 6379:6379 redis:7-alpine
 ## 📊 Performance Impact
 
 ### Before Caching
+
 ```
 Request 1: "What is past tense?" → 2000ms
 Request 2: "What is past tense?" → 2000ms
@@ -225,6 +228,7 @@ Total: 6000ms, 3 API calls, $$$
 ```
 
 ### After Caching
+
 ```
 Request 1: "What is past tense?" → 2000ms (cached)
 Request 2: "What is past tense?" → 5ms    ✅
@@ -233,6 +237,7 @@ Total: 2010ms, 1 API call, $ (67% savings)
 ```
 
 **Real-world impact:**
+
 - 🚀 **Speed:** 200-400x faster for cached requests
 - 💰 **Cost:** 70-90% reduction in API calls
 - 📈 **Scale:** Handle more users with same API quota
@@ -243,6 +248,7 @@ Total: 2010ms, 1 API call, $ (67% savings)
 Perfect for your English learning app:
 
 ### Vocabulary Section
+
 ```java
 // Word definitions - cached 30 days
 aiService.chatWithCache(
@@ -252,9 +258,11 @@ aiService.chatWithCache(
     0.0
 );
 ```
+
 **Impact:** 1000 students ask "What is 'resilient'?" → 1 API call, 999 cache hits
 
 ### Grammar Lessons
+
 ```java
 // Grammar rules - cached 30 days
 aiService.chatWithCache(
@@ -264,9 +272,11 @@ aiService.chatWithCache(
     0.0
 );
 ```
+
 **Impact:** Same explanation for all students, instant delivery
 
 ### Exercise Feedback
+
 ```java
 // Common mistakes - cached 7 days
 aiService.chatWithCache(
@@ -276,9 +286,11 @@ aiService.chatWithCache(
     0.0
 );
 ```
+
 **Impact:** Popular exercises cached, instant feedback
 
 ### Essay Review
+
 ```java
 // User essays - NOT cached
 aiService.chatWithCache(
@@ -288,6 +300,7 @@ aiService.chatWithCache(
     0.0
 );
 ```
+
 **Impact:** Each student gets unique, personalized feedback
 
 ## ⚙️ Configuration Options
@@ -403,6 +416,7 @@ server/
 ## 🔄 Migration Path
 
 ### Current State
+
 ```java
 // Your existing code
 aiService.chat(message, system);
@@ -410,6 +424,7 @@ aiService.chat(message, system);
 ```
 
 ### Future Enhancement
+
 ```java
 // Add content types when needed
 aiService.chatWithCache(message, system, ContentType.VOCABULARY, 0.0);
@@ -417,6 +432,7 @@ aiService.chatWithCache(message, system, ContentType.VOCABULARY, 0.0);
 ```
 
 ### No Breaking Changes
+
 - ✅ Existing code works as-is
 - ✅ Gradual adoption possible
 - ✅ Backward compatible
@@ -462,6 +478,7 @@ aiService.chatWithCache(message, system, ContentType.VOCABULARY, 0.0);
 ## ✨ Summary
 
 You now have a **complete, production-ready AI caching system** that:
+
 - Reduces costs by 70-90%
 - Improves speed by 200-400x for cached content
 - Scales from development to production

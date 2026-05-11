@@ -22,8 +22,9 @@ public class RateLimitService {
 
     /**
      * Check if a request is allowed based on rate limits
-     * @param key Identifier (user email, IP address)
-     * @param maxRequests Maximum number of requests allowed
+     *
+     * @param key           Identifier (user email, IP address)
+     * @param maxRequests   Maximum number of requests allowed
      * @param windowSeconds Time window in seconds
      * @return true if request is allowed, false if rate limit exceeded
      */
@@ -50,8 +51,9 @@ public class RateLimitService {
 
     /**
      * Check and record AI token usage
-     * @param userEmail User identifier
-     * @param tokensUsed Number of tokens used in this request
+     *
+     * @param userEmail        User identifier
+     * @param tokensUsed       Number of tokens used in this request
      * @param maxTokensPerHour Maximum tokens allowed per hour
      * @return true if allowed, false if limit exceeded
      */
@@ -59,8 +61,8 @@ public class RateLimitService {
         cleanupOldEntries();
 
         TokenUsageWindow window = aiTokenWindows.computeIfAbsent(
-            userEmail,
-            k -> new TokenUsageWindow()
+                userEmail,
+                k -> new TokenUsageWindow()
         );
 
         Instant now = Instant.now();
@@ -95,9 +97,9 @@ public class RateLimitService {
         Instant oneHourAgo = now.minus(Duration.ofHours(1));
 
         int currentUsage = window.usage.entrySet().stream()
-            .filter(entry -> entry.getKey().isAfter(oneHourAgo))
-            .mapToInt(Map.Entry::getValue)
-            .sum();
+                .filter(entry -> entry.getKey().isAfter(oneHourAgo))
+                .mapToInt(Map.Entry::getValue)
+                .sum();
 
         return Math.max(0, maxTokensPerHour - currentUsage);
     }
@@ -109,13 +111,13 @@ public class RateLimitService {
         Instant twoHoursAgo = Instant.now().minus(Duration.ofHours(2));
 
         requestWindows.entrySet().removeIf(entry ->
-            entry.getValue().requests.stream()
-                .allMatch(timestamp -> timestamp.isBefore(twoHoursAgo))
+                entry.getValue().requests.stream()
+                        .allMatch(timestamp -> timestamp.isBefore(twoHoursAgo))
         );
 
         aiTokenWindows.entrySet().removeIf(entry ->
-            entry.getValue().usage.keySet().stream()
-                .allMatch(timestamp -> timestamp.isBefore(twoHoursAgo))
+                entry.getValue().usage.keySet().stream()
+                        .allMatch(timestamp -> timestamp.isBefore(twoHoursAgo))
         );
     }
 

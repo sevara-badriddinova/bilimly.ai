@@ -11,7 +11,7 @@ async function parseAuthResponse(res: Response) {
     return data as { token: string; message?: string };
 }
 
-export async function registerUser(email: string, password: string, name?: string, nativeLanguage: string = "uz"){
+export async function registerUser(email: string, password: string, name?: string, nativeLanguage: string = "uz") {
     const res = await fetch(`${API_URL}/api/auth/register`, {
         method: "POST",
         headers: {"Content-Type": "application/json"},
@@ -20,7 +20,7 @@ export async function registerUser(email: string, password: string, name?: strin
     return parseAuthResponse(res);
 }
 
-export async function loginUser(email: string, password: string){
+export async function loginUser(email: string, password: string) {
     const res = await fetch(`${API_URL}/api/auth/login`, {
         method: "POST",
         headers: {"Content-Type": "application/json"},
@@ -30,7 +30,7 @@ export async function loginUser(email: string, password: string){
 }
 
 // Fetch current user with authentication token
-export async function getCurrentUser(token: string){
+export async function getCurrentUser(token: string) {
     const res = await fetch(`${API_URL}/api/auth/me`, {
         method: "GET",
         headers: {
@@ -53,7 +53,7 @@ export async function sendAiChat(token: string, message: string, systemPrompt?: 
             "Authorization": `Bearer ${token}`,
             "Content-Type": "application/json"
         },
-        body: JSON.stringify({ message, systemPrompt })
+        body: JSON.stringify({message, systemPrompt})
     });
 
     const text = await res.text();
@@ -69,4 +69,38 @@ export async function sendAiChat(token: string, message: string, systemPrompt?: 
     }
 
     return text;
+}
+
+export function resolveApiUrl(path: string) {
+    if (/^https?:\/\//.test(path)) return path;
+    return `${API_URL}${path}`;
+}
+
+export async function generateTts(token: string, trackId: string, text: string){
+    const headers: Record<string, string> = {
+        "Content-Type": "application/json"
+    };
+
+    if (token) {
+        headers.Authorization = `Bearer ${token}`;
+    }
+
+    const res = await fetch(`${API_URL}/api/tts`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify({ trackId, text })
+    });
+
+    if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        if (res.status === 401) {
+            throw new Error("AUTH_REQUIRED");
+        }
+        throw new Error(data.error || data.message || "TTS generation failed");
+    }
+
+    return await res.json() as {
+        audioUrl: string;
+        cached: boolean;
+    };
 }

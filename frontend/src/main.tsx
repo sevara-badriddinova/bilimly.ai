@@ -1,12 +1,12 @@
-import { StrictMode, lazy, Suspense } from 'react'
-import { createRoot } from 'react-dom/client'
+import {StrictMode, lazy, Suspense} from 'react'
+import {createRoot} from 'react-dom/client'
 import './index.css'
 import './i18n'
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import {createBrowserRouter, RouterProvider} from 'react-router-dom'
 import AppLayout from './layouts/AppLayout'
 import PublicLayout from './layouts/PublicLayout'
 import ProtectedLayout from "./layouts/ProtectedLayout"
-import { AuthProvider } from "./context/AuthContext"
+import {AuthProvider} from "./context/AuthContext"
 
 const LandingPage = lazy(() => import('./pages/Landing/LandingPage'))
 const DashboardPage = lazy(() => import('./pages/DashboardPage'))
@@ -23,62 +23,62 @@ const AccountPage = lazy(() => import('./pages/Account/AccountPage'))
 const SettingsPage = lazy(() => import('./pages/SettingsPage'))
 
 function PageLoader() {
-  return (
-    <div className="flex items-center justify-center min-h-screen">
-      <div className="w-8 h-8 border-4 border-[#0EA5C9] border-t-transparent rounded-full animate-spin" />
-    </div>
-  )
+    return (
+        <div className="flex items-center justify-center min-h-screen">
+            <div className="w-8 h-8 border-4 border-[#0EA5C9] border-t-transparent rounded-full animate-spin"/>
+        </div>
+    )
 }
 
 function wrap(el: React.ReactElement) {
-  return <Suspense fallback={<PageLoader />}>{el}</Suspense>
+    return <Suspense fallback={<PageLoader/>}>{el}</Suspense>
 }
 
 const router = createBrowserRouter([
-  {
-    element: <PublicLayout />,
-    children: [
-      { path: "/", element: wrap(<LandingPage />) },
-      { path: "/signin", element: wrap(<SignInPage />) },
-      { path: "/signup", element: wrap(<SignUpPage />) },
-      { path: "/auth/sign-in", element: wrap(<SignInPage />) },
-      { path: "/auth/sign-up", element: wrap(<SignUpPage />) },
-      { path: "/lessons", element: wrap(<LessonsPage />) },
-      { path: "/lessons/:id", element: wrap(<LessonViewPage />) },
-    ],
-  },
-  {
-    element: <ProtectedLayout />,
-    children: [
-      {
-        element: <AppLayout />,
+    {
+        element: <PublicLayout/>,
         children: [
-          { path: "/app", element: wrap(<DashboardPage />) },
-          { path: "/app/coach", element: wrap(<ChatPage />) },
-          { path: "/app/grammar", element: wrap(<GrammarPage />) },
-          { path: "/app/vocabulary", element: wrap(<VocabularyPage />) },
-          { path: "/app/speaking", element: wrap(<SpeakingPage />) },
-          { path: "/app/listening", element: wrap(<ListeningPage />) },
-          { path: "/app/profile", element: wrap(<AccountPage />) },
-          { path: "/app/settings", element: wrap(<SettingsPage />) },
-          { path: "/dashboard", element: wrap(<DashboardPage />) },
-          { path: "/chat", element: wrap(<ChatPage />) },
-          { path: "/grammar", element: wrap(<GrammarPage />) },
-          { path: "/vocabulary", element: wrap(<VocabularyPage />) },
-          { path: "/speaking", element: wrap(<SpeakingPage />) },
-          { path: "/listening", element: wrap(<ListeningPage />) },
-          { path: "/account", element: wrap(<AccountPage />) },
-          { path: "/settings", element: wrap(<SettingsPage />) },
+            {path: "/", element: wrap(<LandingPage/>)},
+            {path: "/signin", element: wrap(<SignInPage/>)},
+            {path: "/signup", element: wrap(<SignUpPage/>)},
+            {path: "/auth/sign-in", element: wrap(<SignInPage/>)},
+            {path: "/auth/sign-up", element: wrap(<SignUpPage/>)},
+            {path: "/lessons", element: wrap(<LessonsPage/>)},
+            {path: "/lessons/:id", element: wrap(<LessonViewPage/>)},
         ],
-      },
-    ],
-  },
+    },
+    {
+        element: <ProtectedLayout/>,
+        children: [
+            {
+                element: <AppLayout/>,
+                children: [
+                    {path: "/app", element: wrap(<DashboardPage/>)},
+                    {path: "/app/coach", element: wrap(<ChatPage/>)},
+                    {path: "/app/grammar", element: wrap(<GrammarPage/>)},
+                    {path: "/app/vocabulary", element: wrap(<VocabularyPage/>)},
+                    {path: "/app/speaking", element: wrap(<SpeakingPage/>)},
+                    {path: "/app/listening", element: wrap(<ListeningPage/>)},
+                    {path: "/app/profile", element: wrap(<AccountPage/>)},
+                    {path: "/app/settings", element: wrap(<SettingsPage/>)},
+                    {path: "/dashboard", element: wrap(<DashboardPage/>)},
+                    {path: "/chat", element: wrap(<ChatPage/>)},
+                    {path: "/grammar", element: wrap(<GrammarPage/>)},
+                    {path: "/vocabulary", element: wrap(<VocabularyPage/>)},
+                    {path: "/speaking", element: wrap(<SpeakingPage/>)},
+                    {path: "/listening", element: wrap(<ListeningPage/>)},
+                    {path: "/account", element: wrap(<AccountPage/>)},
+                    {path: "/settings", element: wrap(<SettingsPage/>)},
+                ],
+            },
+        ],
+    },
 ])
 
 createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <AuthProvider>
-      <RouterProvider router={router} />
-    </AuthProvider>
-  </StrictMode>
+    <StrictMode>
+        <AuthProvider>
+            <RouterProvider router={router}/>
+        </AuthProvider>
+    </StrictMode>
 )

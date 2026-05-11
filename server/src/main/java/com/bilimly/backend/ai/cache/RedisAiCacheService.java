@@ -11,13 +11,13 @@ import java.util.Optional;
  * Redis-backed implementation of AI cache.
  * Good for: production, multiserver deployments, high-scale apps.
  * Benefits: persistent, shared across servers, automatic TTL management.
- *
+ * <p>
  * Required dependencies in pom.xml:
  * <dependency>
- *     <groupId>org.springframework.boot</groupId>
- *     <artifactId>spring-boot-starter-data-redis</artifactId>
+ * <groupId>org.springframework.boot</groupId>
+ * <artifactId>spring-boot-starter-data-redis</artifactId>
  * </dependency>
- *
+ * <p>
  * Required configuration in application.properties:
  * spring.data.redis.host=localhost
  * spring.data.redis.port=6379

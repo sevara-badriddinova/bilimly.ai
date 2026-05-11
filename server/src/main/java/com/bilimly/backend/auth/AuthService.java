@@ -13,8 +13,8 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
 
-    public String register(User user){
-        if (userRepository.existsByEmail(user.getEmail())){
+    public String register(User user) {
+        if (userRepository.existsByEmail(user.getEmail())) {
             throw new RuntimeException("User already exists, please login");
         }
 
@@ -26,9 +26,9 @@ public class AuthService {
         return jwtTokenProvider.generateToken(user.getEmail());
     }
 
-    public String login(String email, String password){
+    public String login(String email, String password) {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
-        if (!passwordEncoder.matches(password, user.getPassword())){
+        if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new RuntimeException("Invalid password");
         }
         return jwtTokenProvider.generateToken(user.getEmail());

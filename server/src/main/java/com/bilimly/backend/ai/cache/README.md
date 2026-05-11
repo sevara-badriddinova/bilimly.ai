@@ -2,7 +2,8 @@
 
 ## Overview
 
-AI response caching stores LLM outputs to reduce costs and improve performance. When the same question is asked again, the cached response is returned instantly without calling the expensive AI API.
+AI response caching stores LLM outputs to reduce costs and improve performance. When the same question is asked again,
+the cached response is returned instantly without calling the expensive AI API.
 
 ## Configuration
 
@@ -164,26 +165,27 @@ public class AiController {
 
 ### TTL (Time-To-Live) by Content Type
 
-| Content Type | TTL | Reason |
-|--------------|-----|--------|
-| `VOCABULARY` | 30 days | Static definitions |
-| `GRAMMAR` | 30 days | Rules rarely change |
-| `EXERCISE` | 7 days | May need updates |
-| `GENERAL_CHAT` | 1 hour | Contextual |
-| `PERSONALIZED` | No cache | User-specific |
+| Content Type   | TTL      | Reason              |
+|----------------|----------|---------------------|
+| `VOCABULARY`   | 30 days  | Static definitions  |
+| `GRAMMAR`      | 30 days  | Rules rarely change |
+| `EXERCISE`     | 7 days   | May need updates    |
+| `GENERAL_CHAT` | 1 hour   | Contextual          |
+| `PERSONALIZED` | No cache | User-specific       |
 
 ### TTL by Temperature
 
-| Temperature | TTL | Reason |
-|-------------|-----|--------|
-| < 0.5 | 30 days | Deterministic |
-| 0.5 - 0.8 | 1 hour | Medium randomness |
-| > 0.8 | 15 minutes | High creativity |
-| > 0.9 | No cache | Too random |
+| Temperature | TTL        | Reason            |
+|-------------|------------|-------------------|
+| < 0.5       | 30 days    | Deterministic     |
+| 0.5 - 0.8   | 1 hour     | Medium randomness |
+| > 0.8       | 15 minutes | High creativity   |
+| > 0.9       | No cache   | Too random        |
 
 ## Cache Key Design
 
 Cache keys are built from:
+
 - Normalized prompt (trimmed, lowercased, whitespace collapsed)
 - Model name
 - Temperature
@@ -195,6 +197,7 @@ The key is hashed with SHA-256 for uniqueness and collision-free storage.
 ## Performance
 
 ### Before Caching
+
 ```
 Request 1: "What is past tense?" → API call → 2000ms
 Request 2: "What is past tense?" → API call → 2000ms
@@ -203,6 +206,7 @@ Total: 6000ms, 3 API calls
 ```
 
 ### After Caching
+
 ```
 Request 1: "What is past tense?" → API call → 2000ms (cached)
 Request 2: "What is past tense?" → Cache hit → 5ms
@@ -401,6 +405,7 @@ public class DatabaseAiCacheService implements AiCacheService {
 ## Best Practices
 
 ✅ **DO:**
+
 - Cache static educational content
 - Use content types appropriately
 - Monitor cache hit rates
@@ -409,6 +414,7 @@ public class DatabaseAiCacheService implements AiCacheService {
 - Use Redis in production
 
 ❌ **DON'T:**
+
 - Cache user-specific content
 - Use very long TTLs for creative content
 - Include timestamps in cache keys

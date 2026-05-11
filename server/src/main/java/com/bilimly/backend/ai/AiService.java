@@ -57,14 +57,14 @@ public class AiService {
      * Chat with explicit cache control.
      * Implements cache-before-provider pattern.
      *
-     * @param userMessage User's input prompt
+     * @param userMessage  User's input prompt
      * @param systemPrompt System context/instructions
-     * @param contentType Type of content for TTL strategy
-     * @param temperature AI temperature (0.0-1.0, default 0.0)
+     * @param contentType  Type of content for TTL strategy
+     * @param temperature  AI temperature (0.0-1.0, default 0.0)
      * @return AI response (from cache or API)
      */
     public String chatWithCache(String userMessage, String systemPrompt,
-                               ContentType contentType, Double temperature) {
+                                ContentType contentType, Double temperature) {
 
         String defaultSystemPrompt = """
                 You are a multilingual language tutor.
@@ -91,7 +91,7 @@ public class AiService {
         // Step 1: Check cache (if enabled)
         if (cacheEnabled && ttlStrategy.shouldCache(contentType, actualTemperature)) {
             String cacheKey = keyBuilder.buildKey(
-                userMessage, model, actualTemperature, maxTokens, actualSystemPrompt
+                    userMessage, model, actualTemperature, maxTokens, actualSystemPrompt
             );
 
             Optional<String> cached = cacheService.get(cacheKey);

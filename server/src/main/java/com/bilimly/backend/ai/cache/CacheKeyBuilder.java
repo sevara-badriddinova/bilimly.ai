@@ -1,6 +1,7 @@
 package com.bilimly.backend.ai.cache;
 
 import org.springframework.stereotype.Component;
+
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -16,15 +17,15 @@ public class CacheKeyBuilder {
     /**
      * Generate a cache key from AI request parameters.
      *
-     * @param prompt The user prompt
-     * @param model The AI model name
-     * @param temperature Response randomness (0.0-1.0)
-     * @param maxTokens Max response length
+     * @param prompt        The user prompt
+     * @param model         The AI model name
+     * @param temperature   Response randomness (0.0-1.0)
+     * @param maxTokens     Max response length
      * @param systemContext System prompt/context
      * @return Unique cache key (SHA-256 hash)
      */
     public String buildKey(String prompt, String model, Double temperature,
-                          Integer maxTokens, String systemContext) {
+                           Integer maxTokens, String systemContext) {
 
         // Normalize inputs
         String normalizedPrompt = normalizePrompt(prompt);
@@ -32,12 +33,12 @@ public class CacheKeyBuilder {
 
         // Build composite key
         String composite = String.format(
-            "prompt:%s|model:%s|temp:%.2f|tokens:%d|system:%s",
-            normalizedPrompt,
-            model != null ? model : "default",
-            temperature != null ? temperature : 0.0,
-            maxTokens != null ? maxTokens : 1024,
-            normalizedSystem
+                "prompt:%s|model:%s|temp:%.2f|tokens:%d|system:%s",
+                normalizedPrompt,
+                model != null ? model : "default",
+                temperature != null ? temperature : 0.0,
+                maxTokens != null ? maxTokens : 1024,
+                normalizedSystem
         );
 
         // Hash to fixed-length key
@@ -61,10 +62,10 @@ public class CacheKeyBuilder {
         }
 
         return input
-            .trim()                          // Remove leading/trailing whitespace
-            .replaceAll("\\s+", " ")         // Collapse multiple spaces
-            .replaceAll("[\r\n]+", "\n")     // Normalize line breaks
-            .toLowerCase();                   // Case-insensitive (adjust based on needs)
+                .trim()                          // Remove leading/trailing whitespace
+                .replaceAll("\\s+", " ")         // Collapse multiple spaces
+                .replaceAll("[\r\n]+", "\n")     // Normalize line breaks
+                .toLowerCase();                   // Case-insensitive (adjust based on needs)
     }
 
     /**

@@ -1,5 +1,5 @@
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
-import { getCurrentUser } from "../services/api";
+import {createContext, useContext, useEffect, useMemo, useState} from "react";
+import {getCurrentUser} from "../services/api";
 
 export type User = {
     id: number;
@@ -25,7 +25,7 @@ const TOKEN_KEY = "auth_token";
 const LEGACY_TOKEN_KEY = "token";
 const DISPLAY_NAME_PREFIX = "user_display_name";
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
+export function AuthProvider({children}: { children: React.ReactNode }) {
     const [user, setUser] = useState<User | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -113,6 +113,8 @@ export function useAuth() {
 // Token management helpers
 export function saveToken(token: string, remember: boolean = true) {
     removeToken();
+    // Current architecture uses Bearer JWTs. Future hardening can move refresh tokens
+    // to HttpOnly Secure SameSite cookies while keeping short-lived access tokens.
     if (remember) {
         localStorage.setItem(TOKEN_KEY, token);
     } else {

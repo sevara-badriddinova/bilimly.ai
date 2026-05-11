@@ -1,6 +1,9 @@
 # bilimly.ai
 
-I built this because I wanted to learn languages the way I actually learn things — by talking, making mistakes, and getting instant feedback. Bilimly (from the Uzbek word for "knowledgeable") is a language learning app that connects you with an AI tutor powered by Claude, walks you through grammar and vocabulary lessons, and tracks your progress along the way.
+I built this because I wanted to learn languages the way I actually learn things — by talking, making mistakes, and
+getting instant feedback. Bilimly (from the Uzbek word for "knowledgeable") is a language learning app that connects you
+with an AI tutor powered by Claude, walks you through grammar and vocabulary lessons, and tracks your progress along the
+way.
 
 It supports English, Russian, and Uzbek — both in the interface and as learning targets.
 
@@ -8,9 +11,13 @@ It supports English, Russian, and Uzbek — both in the interface and as learnin
 
 ## What it does
 
-You sign up, pick a learning track, and work through structured lessons — grammar rules, vocabulary sets, listening exercises, speaking practice. Each lesson has interactive exercises (fill in the blank, multiple choice, sentence builder). Between lessons you can open the chat and just talk to the AI tutor, ask it to explain something, or get feedback on a sentence you wrote.
+You sign up, pick a learning track, and work through structured lessons — grammar rules, vocabulary sets, listening
+exercises, speaking practice. Each lesson has interactive exercises (fill in the blank, multiple choice, sentence
+builder). Between lessons you can open the chat and just talk to the AI tutor, ask it to explain something, or get
+feedback on a sentence you wrote.
 
-There's an XP system, progress bars per skill, and an activity chart on the dashboard so you can see how consistent you've been.
+There's an XP system, progress bars per skill, and an activity chart on the dashboard so you can see how consistent
+you've been.
 
 ---
 
@@ -20,7 +27,8 @@ There's an XP system, progress bars per skill, and an activity chart on the dash
 
 **Backend** — Java 17, Spring Boot, Spring Security with JWT auth, PostgreSQL
 
-**AI** — Anthropic Claude API, with a caching layer (Redis + in-memory fallback) so repeated or similar questions don't hammer the API
+**AI** — Anthropic Claude API, with a caching layer (Redis + in-memory fallback) so repeated or similar questions don't
+hammer the API
 
 **Security** — input sanitization on everything going into the AI, rate limiting, role-based route protection
 
@@ -28,7 +36,8 @@ There's an XP system, progress bars per skill, and an activity chart on the dash
 
 ## Running it locally
 
-You'll need Node 18+, Java 17+, and PostgreSQL. Redis is optional — it falls back to in-memory caching if Redis isn't running.
+You'll need Node 18+, Java 17+, and PostgreSQL. Redis is optional — it falls back to in-memory caching if Redis isn't
+running.
 
 **Backend:**
 
@@ -87,9 +96,13 @@ bilimly.ai/
 
 ## A few things I'm particularly happy with
 
-The AI caching system was a fun problem. Claude responses are expensive and slow to generate, so I built a two-layer cache — Redis for persistence, in-memory as a fallback — that stores responses by a semantic key built from the request context. It meaningfully cuts down on API calls for common questions.
+The AI caching system was a fun problem. Claude responses are expensive and slow to generate, so I built a two-layer
+cache — Redis for persistence, in-memory as a fallback — that stores responses by a semantic key built from the request
+context. It meaningfully cuts down on API calls for common questions.
 
-The multilingual support goes deeper than just translating button labels. The backend serves localized error messages (`messages_en.properties`, `messages_uz.properties`) and the AI tutor is prompted to respond in the user's selected language.
+The multilingual support goes deeper than just translating button labels. The backend serves localized error messages (
+`messages_en.properties`, `messages_uz.properties`) and the AI tutor is prompted to respond in the user's selected
+language.
 
 ---
 
@@ -98,4 +111,4 @@ The multilingual support goes deeper than just translating button labels. The ba
 - Spaced repetition for vocabulary (the forgetting curve is real)
 - Voice input for speaking exercises
 - More languages — Kazakh and Turkish are the priority
-c[github.com/sevara-badriddinova](https://github.com/sevara-badriddinova) · [LinkedIn](https://linkedin.com/in/yourprofile)
+  c[github.com/sevara-badriddinova](https://github.com/sevara-badriddinova) · [LinkedIn](https://linkedin.com/in/yourprofile)

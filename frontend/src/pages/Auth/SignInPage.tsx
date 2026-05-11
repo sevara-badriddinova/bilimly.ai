@@ -30,7 +30,9 @@ export function AuthShell({mode}: { mode: "signin" | "signup" }) {
     const [error, setError] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [rememberMe, setRememberMe] = useState(true);
-    const redirectFrom = (location.state as { from?: { pathname?: string; search?: string; hash?: string } } | null)?.from;
+    const redirectFrom = (location.state as {
+        from?: { pathname?: string; search?: string; hash?: string }
+    } | null)?.from;
     const redirectTo = redirectFrom
         ? `${redirectFrom.pathname || "/app"}${redirectFrom.search || ""}${redirectFrom.hash || ""}`
         : "/app";

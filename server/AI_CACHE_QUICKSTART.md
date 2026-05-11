@@ -3,6 +3,7 @@
 ## What is AI Response Caching?
 
 AI response caching stores LLM outputs so identical requests return instantly without calling the AI API again. This:
+
 - **Reduces costs** by avoiding repeated API calls
 - **Improves speed** from ~2 seconds to ~5 milliseconds
 - **Enhances UX** with instant responses
@@ -92,13 +93,13 @@ String feedback = aiService.chatWithCache(
 
 ## Content Type Reference
 
-| Type | TTL | Use For |
-|------|-----|---------|
-| `VOCABULARY` | 30 days | Word definitions, translations |
-| `GRAMMAR` | 30 days | Grammar rules, explanations |
-| `EXERCISE` | 7 days | Exercise solutions, corrections |
-| `GENERAL_CHAT` | 1 hour | General Q&A, conversations |
-| `PERSONALIZED` | No cache | User-specific feedback, essays |
+| Type           | TTL      | Use For                         |
+|----------------|----------|---------------------------------|
+| `VOCABULARY`   | 30 days  | Word definitions, translations  |
+| `GRAMMAR`      | 30 days  | Grammar rules, explanations     |
+| `EXERCISE`     | 7 days   | Exercise solutions, corrections |
+| `GENERAL_CHAT` | 1 hour   | General Q&A, conversations      |
+| `PERSONALIZED` | No cache | User-specific feedback, essays  |
 
 ## Upgrade to Redis (Production)
 
@@ -140,6 +141,7 @@ spring.data.redis.port=6379
 ### Step 4: Restart Application
 
 That's it! Your app now uses Redis cache that:
+
 - Persists across restarts
 - Shares cache between multiple servers
 - Handles high load better
@@ -221,6 +223,7 @@ public String correctSentence(@RequestBody String sentence) {
 ## Best Practices
 
 ### ✅ DO Cache:
+
 - Word definitions
 - Grammar explanations
 - Common questions
@@ -228,6 +231,7 @@ public String correctSentence(@RequestBody String sentence) {
 - Static educational content
 
 ### ❌ DON'T Cache:
+
 - Personalized feedback
 - User-specific essays
 - Content with user IDs

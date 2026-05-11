@@ -49,7 +49,7 @@ export default function Index() {
                 <div className="flex items-center gap-2">
                     <LanguageSwitcher/>
                     {isLoading ? (
-                        <span className="h-9 w-20 rounded-full bg-muted" aria-hidden />
+                        <span className="h-9 w-20 rounded-full bg-muted" aria-hidden/>
                     ) : isAuthenticated ? (
                         <Link
                             to="/app/profile"
@@ -57,7 +57,7 @@ export default function Index() {
                             title={user?.email || t("nav.profile", "Profile")}
                             className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-foreground text-background transition hover:opacity-90"
                         >
-                            <UserCircle className="h-5 w-5" />
+                            <UserCircle className="h-5 w-5"/>
                         </Link>
                     ) : (
                         <Link to="/signin"

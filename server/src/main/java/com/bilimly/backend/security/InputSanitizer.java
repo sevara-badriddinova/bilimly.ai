@@ -12,14 +12,14 @@ public class InputSanitizer {
 
     // Pattern for detecting potential XSS attempts
     private static final Pattern XSS_PATTERN = Pattern.compile(
-        "<script[^>]*>.*?</script>|javascript:|onerror=|onload=|<iframe|<object|<embed",
-        Pattern.CASE_INSENSITIVE | Pattern.DOTALL
+            "<script[^>]*>.*?</script>|javascript:|onerror=|onload=|<iframe|<object|<embed",
+            Pattern.CASE_INSENSITIVE | Pattern.DOTALL
     );
 
     // Pattern for detecting SQL injection attempts
     private static final Pattern SQL_INJECTION_PATTERN = Pattern.compile(
-        "(;\\s*(DROP|DELETE|INSERT|UPDATE|EXEC|EXECUTE)\\b)|(/\\*.*?\\*/)|(\\b(OR|AND)\\b\\s+\\d+\\s*=\\s*\\d+)",
-        Pattern.CASE_INSENSITIVE
+            "(;\\s*(DROP|DELETE|INSERT|UPDATE|EXEC|EXECUTE)\\b)|(/\\*.*?\\*/)|(\\b(OR|AND)\\b\\s+\\d+\\s*=\\s*\\d+)",
+            Pattern.CASE_INSENSITIVE
     );
 
     // Pattern for control characters (except newlines and tabs)
@@ -27,6 +27,7 @@ public class InputSanitizer {
 
     /**
      * Sanitize input by removing dangerous characters and patterns
+     *
      * @param input Raw user input
      * @return Sanitized input
      */
@@ -49,6 +50,7 @@ public class InputSanitizer {
 
     /**
      * Check if input contains potentially dangerous patterns
+     *
      * @param input User input to check
      * @return true if input appears safe, false if suspicious
      */
@@ -79,12 +81,12 @@ public class InputSanitizer {
         }
 
         return input
-            .replace("&", "&amp;")
-            .replace("<", "&lt;")
-            .replace(">", "&gt;")
-            .replace("\"", "&quot;")
-            .replace("'", "&#x27;")
-            .replace("/", "&#x2F;");
+                .replace("&", "&amp;")
+                .replace("<", "&lt;")
+                .replace(">", "&gt;")
+                .replace("\"", "&quot;")
+                .replace("'", "&#x27;")
+                .replace("/", "&#x2F;");
     }
 
     /**

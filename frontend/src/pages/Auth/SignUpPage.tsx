@@ -1,5 +1,5 @@
-import { AuthShell } from "./SignInPage";
+import {AuthShell} from "./SignInPage";
 
 export default function SignUpPage() {
-  return <AuthShell mode="signup" />;
+    return <AuthShell mode="signup"/>;
 }

@@ -12,9 +12,9 @@ public interface AiCacheService {
     /**
      * Store AI response in cache.
      *
-     * @param key Unique cache key
+     * @param key      Unique cache key
      * @param response AI response text
-     * @param ttl Time-to-live duration
+     * @param ttl      Time-to-live duration
      */
     void put(String key, String response, Duration ttl);
 

@@ -35,8 +35,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .headers(headers -> headers
-                        // Security headers
-                        .contentTypeOptions(contentType -> contentType.disable())
+                        // Keep Bearer JWT auth; these headers reduce browser-side attack surface.
                         .xssProtection(xss -> xss.disable()) // Modern browsers use CSP
                         .frameOptions(frame -> frame.deny()) // Prevent clickjacking
                         .httpStrictTransportSecurity(hsts -> hsts
@@ -50,7 +49,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/audio/**").permitAll()
+                        .requestMatchers("/api/ai/examples/**").hasRole("ADMIN")
                         .requestMatchers("/api/ai/**").authenticated()
+                        .requestMatchers("/api/tts", "/api/tts/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(e -> e
@@ -70,15 +72,14 @@ public class SecurityConfig {
     }
 
 
-
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
-        config.setAllowedOriginPatterns(List.of(
+        config.setAllowedOrigins(List.of(
                 "http://localhost:5173",
-                "http://localhost:5174",
-                "https://*.vercel.app"
+                "http://127.0.0.1:5173",
+                "https://bilimly-ai.vercel.app"
         ));
 
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));

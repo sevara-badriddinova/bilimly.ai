@@ -3,6 +3,7 @@
 ## ❌ Mistake #1: Caching Personalized Content
 
 ### The Problem
+
 ```java
 // WRONG - User-specific content gets cached
 @PostMapping("/api/feedback")
@@ -25,12 +26,14 @@ public String reviewEssay(@RequestBody EssayRequest request) {
 ```
 
 ### The Impact
+
 - User A uploads essay, gets feedback
 - Cache stores: "Great work on paragraphs 1-3..."
 - User B uploads **different** essay
 - User B receives **User A's feedback**! 🚨
 
 ### The Solution
+
 ```java
 // RIGHT - Use PERSONALIZED content type
 @PostMapping("/api/feedback")
@@ -50,7 +53,9 @@ public String reviewEssay(@RequestBody EssayRequest request) {
 ```
 
 ### How to Identify
+
 Personalized content includes:
+
 - User IDs, names, or personal info
 - User-submitted text (essays, stories)
 - User history or progress
@@ -62,6 +67,7 @@ Personalized content includes:
 ## ❌ Mistake #2: Including Timestamps in Cache Keys
 
 ### The Problem
+
 ```java
 // WRONG - Timestamp prevents cache hits
 @PostMapping("/api/vocab")
@@ -78,6 +84,7 @@ public String defineWord(@RequestBody String word) {
 ```
 
 ### The Impact
+
 ```
 Request 1: "Define 'cat'. Requested at: 2024-01-15 10:00:00"
   → Cache key: abc123...
@@ -90,6 +97,7 @@ Request 2: "Define 'cat'. Requested at: 2024-01-15 10:00:01"
 ```
 
 ### The Solution
+
 ```java
 // RIGHT - Remove non-essential time-dependent data
 @PostMapping("/api/vocab")
@@ -100,6 +108,7 @@ public String defineWord(@RequestBody String word) {
 ```
 
 ### Other Time-Dependent Anti-Patterns
+
 ```java
 // ❌ Don't include:
 - LocalDateTime.now()
@@ -114,6 +123,7 @@ public String defineWord(@RequestBody String word) {
 ## ❌ Mistake #3: Wrong Content Type = Wrong TTL
 
 ### The Problem
+
 ```java
 // WRONG - Creative content with long TTL
 @PostMapping("/api/creative/story")
@@ -128,12 +138,14 @@ public String writeStory(@RequestBody String prompt) {
 ```
 
 ### The Impact
+
 - Temperature 0.9 = very creative/random responses
 - VOCABULARY = 30 day cache
 - Same creative story returned for 30 days
 - Users expect variety, get same story every time
 
 ### The Solution
+
 ```java
 // RIGHT - Match content type to use case
 @PostMapping("/api/creative/story")
@@ -159,20 +171,22 @@ public String writeStory(@RequestBody String prompt) {
 ```
 
 ### Content Type Cheat Sheet
-| Content | Type | TTL | Temperature |
-|---------|------|-----|-------------|
-| Definitions | `VOCABULARY` | 30 days | 0.0 |
-| Grammar rules | `GRAMMAR` | 30 days | 0.0 |
-| Exercises | `EXERCISE` | 7 days | 0.0 |
-| Q&A | `GENERAL_CHAT` | 1 hour | 0.0-0.5 |
-| Creative | `PERSONALIZED` | No cache | 0.7+ |
-| User-specific | `PERSONALIZED` | No cache | Any |
+
+| Content       | Type           | TTL      | Temperature |
+|---------------|----------------|----------|-------------|
+| Definitions   | `VOCABULARY`   | 30 days  | 0.0         |
+| Grammar rules | `GRAMMAR`      | 30 days  | 0.0         |
+| Exercises     | `EXERCISE`     | 7 days   | 0.0         |
+| Q&A           | `GENERAL_CHAT` | 1 hour   | 0.0-0.5     |
+| Creative      | `PERSONALIZED` | No cache | 0.7+        |
+| User-specific | `PERSONALIZED` | No cache | Any         |
 
 ---
 
 ## ❌ Mistake #4: Forgetting to Evict After Updates
 
 ### The Problem
+
 ```java
 // Admin updates lesson content
 @PutMapping("/api/admin/lessons/{id}")
@@ -192,12 +206,14 @@ public String getExplanation(@PathVariable Long id) {
 ```
 
 ### The Impact
+
 - Admin updates "Past Tense" lesson
 - Cache still has old explanation
 - Students see outdated content for 30 days
 - Admin thinks update didn't work
 
 ### The Solution
+
 ```java
 @PutMapping("/api/admin/lessons/{id}")
 public Lesson updateLesson(@PathVariable Long id, @RequestBody Lesson lesson) {
@@ -211,6 +227,7 @@ public Lesson updateLesson(@PathVariable Long id, @RequestBody Lesson lesson) {
 ```
 
 ### When to Evict Cache
+
 - ✅ After content updates
 - ✅ After corrections
 - ✅ After admin edits
@@ -222,6 +239,7 @@ public Lesson updateLesson(@PathVariable Long id, @RequestBody Lesson lesson) {
 ## ❌ Mistake #5: High Temperature + Long Cache
 
 ### The Problem
+
 ```java
 // WRONG - Random responses cached for 30 days
 @PostMapping("/api/practice/conversation")
@@ -236,11 +254,13 @@ public String practice(@RequestBody String topic) {
 ```
 
 ### The Impact
+
 - High temperature = creative, random responses
 - Long cache = same "random" response every time
 - Defeats the purpose of using high temperature
 
 ### The Solution
+
 ```java
 // RIGHT - Don't cache high-temperature responses
 @PostMapping("/api/practice/conversation")
@@ -255,18 +275,20 @@ public String practice(@RequestBody String topic) {
 ```
 
 ### Temperature Guidelines
-| Temperature | Should Cache? | TTL |
-|-------------|---------------|-----|
-| 0.0 - 0.3 | ✅ Yes | 30 days |
-| 0.4 - 0.7 | ⚠️ Maybe | 1 hour |
-| 0.8 - 0.9 | ❌ No | Don't cache |
-| 1.0 | ❌ Never | Don't cache |
+
+| Temperature | Should Cache? | TTL         |
+|-------------|---------------|-------------|
+| 0.0 - 0.3   | ✅ Yes         | 30 days     |
+| 0.4 - 0.7   | ⚠️ Maybe      | 1 hour      |
+| 0.8 - 0.9   | ❌ No          | Don't cache |
+| 1.0         | ❌ Never       | Don't cache |
 
 ---
 
 ## ❌ Mistake #6: Caching Errors
 
 ### The Problem
+
 ```java
 // WRONG - Errors get cached
 try {
@@ -281,12 +303,14 @@ try {
 ```
 
 ### The Impact
+
 - API temporarily down
 - Error message gets cached
 - API comes back up
 - Users still see cached error for TTL duration
 
 ### The Solution
+
 ```java
 // RIGHT - Only cache successful responses
 try {
@@ -308,6 +332,7 @@ try {
 ## ❌ Mistake #7: Ignoring Cache Size
 
 ### The Problem
+
 ```java
 // WRONG - Unbounded cache growth
 for (String word : dictionary) {  // 100,000 words
@@ -318,6 +343,7 @@ for (String word : dictionary) {  // 100,000 words
 ```
 
 ### The Impact
+
 - In-memory cache grows too large
 - Application runs out of memory
 - Crashes or slow performance
@@ -325,12 +351,15 @@ for (String word : dictionary) {  // 100,000 words
 ### The Solution
 
 **Option 1:** Use Redis (recommended for production)
+
 ```properties
 ai.cache.type=redis
 ```
+
 Redis handles large datasets efficiently.
 
 **Option 2:** Monitor and set limits
+
 ```java
 // Add to InMemoryAiCacheService
 private static final int MAX_CACHE_SIZE = 10000;
@@ -350,6 +379,7 @@ public void put(String key, String response, Duration ttl) {
 ## ❌ Mistake #8: Not Normalizing User Input
 
 ### The Problem
+
 ```java
 // These should hit same cache but don't:
 "What is past tense?"
@@ -359,14 +389,17 @@ public void put(String key, String response, Duration ttl) {
 ```
 
 ### The Impact
+
 - Same question, different formatting
 - Cache misses unnecessarily
 - Lower hit rate, higher costs
 
 ### The Solution
+
 **Our implementation already handles this!** ✅
 
 `CacheKeyBuilder` normalizes:
+
 - ✅ Trims whitespace
 - ✅ Lowercases text
 - ✅ Collapses multiple spaces
@@ -385,6 +418,7 @@ aiService.chat("WHAT  IS  PAST  TENSE?", null);
 ## ❌ Mistake #9: Wrong Cache for Deployment Type
 
 ### The Problem
+
 ```java
 // WRONG - In-memory cache in multi-server setup
 // Server 1 caches response
@@ -394,19 +428,21 @@ aiService.chat("WHAT  IS  PAST  TENSE?", null);
 ```
 
 ### The Impact
+
 - Multi-server deployment
 - Each server has own cache
 - Effective cache hit rate divided by server count
 - If 3 servers: 66% waste
 
 ### The Solution
-| Deployment | Cache Type | Reason |
-|------------|------------|--------|
-| Development | `memory` | Simple, fast |
-| Single server | `memory` | Works fine |
-| Multiple servers | `redis` | ✅ Shared cache |
-| Kubernetes | `redis` | ✅ Pods share |
-| Serverless | `redis` | ✅ Stateless |
+
+| Deployment       | Cache Type | Reason         |
+|------------------|------------|----------------|
+| Development      | `memory`   | Simple, fast   |
+| Single server    | `memory`   | Works fine     |
+| Multiple servers | `redis`    | ✅ Shared cache |
+| Kubernetes       | `redis`    | ✅ Pods share   |
+| Serverless       | `redis`    | ✅ Stateless    |
 
 ```properties
 # Production: Always use Redis for multi-server
@@ -419,6 +455,7 @@ spring.data.redis.host=redis.internal
 ## ❌ Mistake #10: Testing in Production First
 
 ### The Problem
+
 ```java
 // Deploy to production
 // Turn on caching
@@ -427,6 +464,7 @@ spring.data.redis.host=redis.internal
 ```
 
 ### The Solution
+
 **Test caching behavior before production:**
 
 ```java

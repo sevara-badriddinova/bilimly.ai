@@ -32,7 +32,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String header = request.getHeader("Authorization");
 
         // other pages (login/sign up) don't need tokens
-        if (header == null || !header.startsWith("Bearer ")){
+        if (header == null || !header.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -43,7 +43,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         // check if token is valid and not expired
         boolean isValid = jwtTokenProvider.validateToken(token);
 
-        if(!isValid){
+        if (!isValid) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -54,7 +54,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         // check if exists in db
         Optional<User> optUser = userService.findByEmail(email);
 
-        if (optUser.isEmpty()){
+        if (optUser.isEmpty()) {
             filterChain.doFilter(request, response);
             return;
         }

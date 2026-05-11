@@ -17,8 +17,11 @@ server/mvnw.cmd
 
 # Environment variables
 .env
+.env.*
 .env.local
 *.env
+**/.env
+**/.env.*
 
 # Logs
 *.log
