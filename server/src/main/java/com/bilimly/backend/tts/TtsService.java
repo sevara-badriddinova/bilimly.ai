@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.MessageDigest;
@@ -101,9 +102,11 @@ public class TtsService {
                     mp3File.toString()
             ).redirectErrorStream(true).start();
 
+            byte[] output = process.getInputStream().readAllBytes();
             boolean finished = process.waitFor(Duration.ofSeconds(30).toMillis(), java.util.concurrent.TimeUnit.MILLISECONDS);
             if (!finished || process.exitValue() != 0) {
-                throw new IllegalStateException("ffmpeg failed to convert Gemini PCM audio to MP3");
+                String detail = new String(output, StandardCharsets.UTF_8).trim();
+                throw new IllegalStateException("ffmpeg failed to convert Gemini PCM audio to MP3: " + detail);
             }
         } finally {
             Files.deleteIfExists(pcmFile);
