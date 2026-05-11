@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import {
@@ -12,6 +12,7 @@ import {
   Settings,
   Flame,
   GraduationCap,
+  LogOut,
 } from "lucide-react";
 import humoBird from "@/assets/humo-bird.png";
 import { LanguageSwitcher } from "@/components/language-switcher";
@@ -60,9 +61,15 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
 function Sidebar() {
   const { pathname } = useLocation();
+  const navigate = useNavigate();
   const { t } = useTranslation();
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const displayName = getUserDisplayName(user);
+
+  const handleLogout = () => {
+    logout();
+    navigate("/signin", { replace: true });
+  };
 
   return (
     <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-r border-border bg-card/40 px-4 py-6 md:flex">
@@ -94,6 +101,15 @@ function Sidebar() {
         <p className="text-display mt-1 truncate text-lg leading-tight">{displayName}</p>
         <p className="truncate text-xs text-muted-foreground">{user?.email}</p>
       </div>
+
+      <button
+        type="button"
+        onClick={handleLogout}
+        className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-full border-2 border-destructive/30 bg-destructive/5 px-4 py-2.5 text-sm font-semibold text-destructive transition hover:bg-destructive/10"
+      >
+        <LogOut className="h-4 w-4" />
+        {t("settings.signOut")}
+      </button>
 
       <div className="relative mt-4 overflow-hidden rounded-2xl border-2 border-foreground/10 bg-card p-4">
         <img src={humoBird} alt="" width={80} height={80} className="absolute -right-3 -bottom-3 h-20 w-20 opacity-90" />

@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Menu, X } from "lucide-react";
-import { useAuth } from "../../context/AuthContext";
+import { Menu, UserCircle, X } from "lucide-react";
+import { getUserDisplayName, useAuth } from "../../context/AuthContext";
 import { Button } from "./button";
 import { changeLanguage } from "@/i18n";
 
 export default function Navbar() {
-  const { isAuthenticated, logout } = useAuth();
-  const navigate = useNavigate();
+  const { isAuthenticated, isLoading, user } = useAuth();
   const { t, i18n } = useTranslation();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -27,12 +26,6 @@ export default function Navbar() {
     { label: t("lessons", "Lessons"), href: isAuthenticated ? "/lessons" : "/#learning-path" },
     { label: "Pricing", href: "/pricing" },
   ];
-
-  const handleLogout = () => {
-    logout();
-    navigate("/");
-    setMenuOpen(false);
-  };
 
   return (
     <header
@@ -83,10 +76,17 @@ export default function Navbar() {
             <option value="uz">UZ</option>
           </select>
 
-          {isAuthenticated ? (
-            <Button onClick={handleLogout} className="h-10 rounded-full bg-[#F59E0B] px-4 text-sm font-bold text-[#0D1B2A] hover:bg-[#F59E0B]/90">
-              {t("signOut")}
-            </Button>
+          {isLoading ? (
+            <div className="h-10 w-24 rounded-full bg-white/10" aria-hidden />
+          ) : isAuthenticated ? (
+            <NavLink
+              to="/app/profile"
+              aria-label={t("nav.profile", "Profile")}
+              title={getUserDisplayName(user)}
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/10 text-white transition hover:border-sky-300/50 hover:bg-white/15"
+            >
+              <UserCircle className="h-6 w-6" />
+            </NavLink>
           ) : (
             <>
               <NavLink to="/auth/sign-in" className="h-10 rounded-full px-4 py-2 text-sm font-bold text-white/78 transition hover:text-white">
@@ -137,10 +137,19 @@ export default function Navbar() {
                 </button>
               ))}
             </div>
-            {isAuthenticated ? (
-              <button onClick={handleLogout} className="mt-2 rounded-full bg-[#F59E0B] px-4 py-3 text-sm font-black text-[#0D1B2A]">
-                {t("signOut")}
-              </button>
+            {isLoading ? (
+              <div className="mt-2 h-11 rounded-full bg-white/10" aria-hidden />
+            ) : isAuthenticated ? (
+              <div className="mt-2">
+                <NavLink
+                  to="/app/profile"
+                  onClick={() => setMenuOpen(false)}
+                  aria-label={t("nav.profile", "Profile")}
+                  className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/14 bg-white/10 text-white"
+                >
+                  <UserCircle className="h-6 w-6" />
+                </NavLink>
+              </div>
             ) : (
               <div className="mt-2 grid grid-cols-2 gap-2">
                 <NavLink to="/auth/sign-in" onClick={() => setMenuOpen(false)} className="rounded-full border border-white/14 px-4 py-3 text-center text-sm font-bold text-white">

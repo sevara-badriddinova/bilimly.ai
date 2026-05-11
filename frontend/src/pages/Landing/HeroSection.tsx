@@ -13,7 +13,7 @@ export default function HeroSection() {
           style={{ background: 'radial-gradient(ellipse, #0EA5C9 0%, transparent 70%)', filter: 'blur(60px)' }} />
         <div className="absolute bottom-0 right-0 w-[400px] h-[400px] rounded-full opacity-10"
           style={{ background: 'radial-gradient(ellipse, #F59E0B 0%, transparent 70%)', filter: 'blur(80px)' }} />
-        <svg className="absolute inset-0 w-full h-full opacity-[0.04]" xmlns="http://www.w3.org/2000/svg">
+        <svg className="absolute inset-0 w-full h-full opacity-[0.04]" xmlns="frontend/src/assets/humo-bird.png">
           <defs>
             <pattern id="dots" x="0" y="0" width="24" height="24" patternUnits="userSpaceOnUse">
               <circle cx="2" cy="2" r="1.5" fill="white" />

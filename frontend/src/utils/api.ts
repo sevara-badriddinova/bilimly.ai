@@ -1,7 +1,9 @@
+import { getToken } from "@/context/AuthContext";
+
 const API_BASE_URL = '/api';
 
 export async function apiRequest(endpoint: string, options: RequestInit = {}) {
-  const token = localStorage.getItem('token');
+  const token = getToken();
 
   const headers = new Headers(options.headers);
   headers.set('Content-Type', 'application/json');

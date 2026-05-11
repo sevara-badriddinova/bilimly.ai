@@ -22,6 +22,7 @@ export const AuthContext = createContext<AuthContextValue | null>(null);
 
 // Token storage keys
 const TOKEN_KEY = "auth_token";
+const LEGACY_TOKEN_KEY = "token";
 const DISPLAY_NAME_PREFIX = "user_display_name";
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
@@ -111,6 +112,7 @@ export function useAuth() {
 
 // Token management helpers
 export function saveToken(token: string, remember: boolean = true) {
+    removeToken();
     if (remember) {
         localStorage.setItem(TOKEN_KEY, token);
     } else {
@@ -119,11 +121,12 @@ export function saveToken(token: string, remember: boolean = true) {
 }
 
 export function getToken(): string | null {
-    return localStorage.getItem(TOKEN_KEY) || sessionStorage.getItem(TOKEN_KEY);
+    return localStorage.getItem(TOKEN_KEY) || sessionStorage.getItem(TOKEN_KEY) || localStorage.getItem(LEGACY_TOKEN_KEY);
 }
 
 export function removeToken() {
     localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(LEGACY_TOKEN_KEY);
     sessionStorage.removeItem(TOKEN_KEY);
 }
 
