@@ -49,7 +49,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/audio/**").permitAll()
+                        .requestMatchers("/audio", "/audio/**").permitAll()
                         .requestMatchers("/api/ai/examples/**").hasRole("ADMIN")
                         .requestMatchers("/api/ai/**").authenticated()
                         .requestMatchers("/api/tts", "/api/tts/**").permitAll()
