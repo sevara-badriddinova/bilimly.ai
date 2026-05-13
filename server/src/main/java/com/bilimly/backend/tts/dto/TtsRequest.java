@@ -8,7 +8,6 @@ public record TtsRequest(
         @Size(max = 120)
         String trackId,
 
-        @NotBlank
         @Size(max = 1000)
         String text
 ) {

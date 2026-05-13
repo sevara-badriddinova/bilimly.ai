@@ -56,6 +56,10 @@ public class TtsController {
             }
 
             cacheNamespace = "custom";
+            if (request.text() == null || request.text().isBlank()) {
+                return ResponseEntity.badRequest()
+                        .body(Map.of("error", "Text is required for custom audio"));
+            }
             text = request.text();
         }
 
