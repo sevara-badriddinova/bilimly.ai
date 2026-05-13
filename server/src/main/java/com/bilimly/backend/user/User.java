@@ -24,6 +24,8 @@ public class User {
 
     private String name;
 
+    private String nativeLanguage;
+
     @Enumerated(EnumType.STRING)
     private Role role;
 
@@ -57,6 +59,14 @@ public class User {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getNativeLanguage() {
+        return nativeLanguage;
+    }
+
+    public void setNativeLanguage(String nativeLanguage) {
+        this.nativeLanguage = nativeLanguage;
     }
 
     public Role getRole() {

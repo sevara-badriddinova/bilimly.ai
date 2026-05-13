@@ -1,0 +1,149 @@
+{
+  "dashboard": {
+    "label": "Boshqaruv paneli",
+    "yourProgress": "Sizning rivojlanishingiz",
+    "continue": "O‘rganishni davom ettirish",
+    "skills": "Ko‘nikmalar",
+    "achievements": "Yutuqlar"
+  },
+  "chat": "Chat",
+  "signIn": "Kirish",
+  "signOut": "Chiqish",
+  "welcome": "Xush kelibsiz",
+  "grammar": "Grammatika",
+  "vocabulary": "So‘z boyligi",
+  "listening": "Tinglash",
+  "speaking": "Gapirish",
+  "lessons": "Darslar",
+  "progress": "Rivojlanish",
+  "level": "Daraja",
+  "xp": "XP",
+  "streak": "Ketma-ketlik",
+  "continue": "Davom etish",
+  "start": "Boshlash",
+  "backTo": "Qaytish",
+  "completed": "Yakunlandi",
+  "locked": "Yopiq",
+  "hero": {
+    "badge": "AI yordamida o‘rganish",
+    "title": "Xalqaro IT karyerasi uchun ingliz tilini o‘rganing",
+    "subtitle": "O‘zbekistonlik STEM talabalari uchun sun’iy intellektga asoslangan ingliz tili platformasi",
+    "cta": "Bepul boshlash →",
+    "learnMore": "Batafsil",
+    "titleLine1": "Ingliz tilini",
+    "titleLine2": "o‘zbek tilida",
+    "titleLine3": "AI yordamida o‘rganing",
+    "mainSubtitle": "Shaxsiy AI repetitoringiz grammatika, so‘z boyligi va gapirishni sizning ona tilingizda tushuntirib beradi.",
+    "stats": {
+      "learners": "O‘quvchilar",
+      "languages": "Tillar",
+      "lessons": "Darslar"
+    },
+    "card": {
+      "todaysLesson": "BUGUNGI DARS",
+      "xpEarned": "⚡ Bugun 240 XP qo‘lga kiritildi",
+      "level": "5-daraja",
+      "streak": "🔥 7 kunlik ketma-ketlik"
+    }
+  },
+  "howItWorks": {
+    "badge": "Qanday ishlaydi",
+    "title": "Ingliz tilida erkin gapirish uchun 3 qadam",
+    "subtitle": "Ingliz tilini o‘rganish hech qachon bunchalik oson va qiziqarli bo‘lmagan.",
+    "step1": {
+      "title": "AI bilan 3 tilda suhbatlashing",
+      "desc": "Ingliz tili haqida istalgan savolni bering va o‘zbek, rus yoki ingliz tilida aniq tushuntirishlar oling."
+    },
+    "step2": {
+      "title": "Bosqichma-bosqich o‘rganing",
+      "desc": "Grammatika, so‘z boyligi va gapirish bo‘yicha tizimli darslarni o‘ting. O‘zbek tilida so‘zlashadiganlar uchun yaratilgan."
+    },
+    "step3": {
+      "title": "Rivojlanishingizni kuzating",
+      "desc": "XP to‘plang, darajangizni oshiring va ingliz tilingiz har kuni qanday yaxshilanayotganini kuzating."
+    },
+    "cta": {
+      "title": "Boshlashga tayyormisiz?",
+      "subtitle": "Har kuni ingliz tilini yaxshilayotgan minglab o‘zbekistonlik o‘quvchilarga qo‘shiling.",
+      "button": "Bepul boshlash →"
+    }
+  },
+  "grammarPage": {
+    "title": "Grammatika darslari",
+    "subtitle": "Ingliz grammatikasini bosqichma-bosqich o‘rganing",
+    "tips": {
+      "title": "Grammatika o‘rganish bo‘yicha maslahatlar",
+      "tip1": "Muntazam mashq qiling — kuniga 10 daqiqa ham foyda beradi!",
+      "tip2": "Yaxshi natija uchun mashqlarni tartib bilan bajaring",
+      "tip3": "Xatolaringizni ko‘rib chiqing va ulardan o‘rganing",
+      "tip4": "Yangi grammatikani o‘z gaplaringizda ishlatishga harakat qiling"
+    }
+  },
+  "vocabularyPage": {
+    "title": "So‘z boyligi darslari",
+    "subtitle": "Professional so‘z boyligingizni kengaytiring",
+    "tips": {
+      "title": "So‘z boyligini oshirish bo‘yicha maslahatlar",
+      "tip1": "So‘zlarni alohida emas, kontekstda o‘rganing",
+      "tip2": "Yangi so‘zlarni darhol gaplarda ishlating",
+      "tip3": "Yaxshi eslab qolish uchun muntazam takrorlang",
+      "tip4": "Ko‘p ishlatiladigan professional atamalarga e’tibor bering"
+    }
+  },
+  "listeningPage": {
+    "title": "Tinglash mashqlari",
+    "subtitle": "Tinglab tushunish ko‘nikmangizni yaxshilang"
+  },
+  "speakingPage": {
+    "title": "Gapirish mashqlari",
+    "subtitle": "Ingliz tilida erkinroq gapirishga ishonch hosil qiling"
+  },
+  "chatPage": {
+    "title": "Bilimly AI Murabbiy",
+    "subtitle": "Professional ingliz tili mashg‘ulotlari",
+    "welcome": "Bilimly AI ga xush kelibsiz! Men sizning ingliz tili bo‘yicha AI yordamchingizman.",
+    "capabilities": "Men sizga quyidagilarda yordam bera olaman:",
+    "grammarFeedback": "Grammatika tahlili — istalgan inglizcha gapni yozing, men uni batafsil tushuntirish bilan tuzataman",
+    "lessonGeneration": "Dars yaratish — istalgan grammatika mavzusi bo‘yicha dars so‘rang, masalan: “Present Perfect bo‘yicha dars yarating”",
+    "careerEnglish": "Karyera uchun ingliz tili — intervyu va IT karyerasi uchun professional muloqotni mashq qiling",
+    "placeholder": "Mashq qilish uchun inglizcha matn yozing...",
+    "analyzing": "Tahlil qilinyapti...",
+    "send": "Yuborish",
+    "sending": "Yuborilmoqda...",
+    "practiceNote": "Batafsil fikr-mulohaza olish uchun istalgan inglizcha gap yoki paragrafni mashq qiling"
+  },
+  "auth": {
+    "signIn": "Kirish",
+    "signUp": "Ro‘yxatdan o‘tish",
+    "createAccount": "Akkaunt yaratish",
+    "signInSubtitle": "Bilimly.ai ga qaytganingizdan xursandmiz",
+    "signUpSubtitle": "Bilimly.ai bilan o‘rganishni boshlang",
+    "email": "Email",
+    "password": "Parol",
+    "fullName": "To‘liq ism",
+    "rememberMe": "Meni eslab qol",
+    "forgotPassword": "Parolni unutdingizmi?",
+    "noAccount": "Hisobingiz yo‘qmi?",
+    "hasAccount": "Allaqachon hisobingiz bormi?",
+    "createOne": "Yarating",
+    "signUpLink": "Ro‘yxatdan o‘ting",
+    "signInLink": "Kirish",
+    "signingIn": "Kirilmoqda...",
+    "creatingAccount": "Akkaunt yaratilmoqda...",
+    "accountCreated": "✓ Akkaunt muvaffaqiyatli yaratildi! Yo‘naltirilmoqda...",
+    "loginFailed": "Kirish amalga oshmadi. Qayta urinib ko‘ring.",
+    "registrationFailed": "Ro‘yxatdan o‘tish amalga oshmadi. Qayta urinib ko‘ring.",
+    "genericError": "Xatolik yuz berdi. Qayta urinib ko‘ring."
+  },
+  "lesson": {
+    "unitComplete": "Bo‘lim yakunlandi!",
+    "accuracy": "To‘g‘rilik",
+    "correct": "To‘g‘ri",
+    "earned": "Qo‘lga kiritildi",
+    "backToGrammar": "Grammatikaga qaytish",
+    "backToVocabulary": "So‘z boyligiga qaytish",
+    "outOfHearts": "Yurakchalar tugadi!",
+    "outOfHeartsMessage": "Xavotir olmang, to‘xtagan joyingizdan yana urinib ko‘rishingiz mumkin.",
+    "finishUnit": "Bo‘limni yakunlash"
+  }
+}

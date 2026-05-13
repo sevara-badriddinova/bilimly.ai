@@ -2,16 +2,23 @@ package com.bilimly.backend.auth;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.security.Key;
+import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 @Component
 public class JwtTokenProvider {
-    private final Key secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    private final SecretKey secretKey;
     // 1 hour
     private final long expirationTime = 1000 * 60 * 60;
+
+    public JwtTokenProvider(@Value("${jwt.secret}") String secret) {
+        // Use the secret from application.properties
+        this.secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+    }
 
     // generate jwt token
     public String generateToken(String email) {
@@ -24,7 +31,7 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public String getToken(String token){
+    public String getToken(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(secretKey)
                 .build()
@@ -33,14 +40,14 @@ public class JwtTokenProvider {
                 .getSubject();
     }
 
-    public boolean validateToken(String token){
+    public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder()
                     .setSigningKey(secretKey)
                     .build()
                     .parseClaimsJws(token);
             return true;
-        } catch (JwtException | IllegalArgumentException e){
+        } catch (JwtException | IllegalArgumentException e) {
             return false;
         }
 

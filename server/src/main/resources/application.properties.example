@@ -1,0 +1,59 @@
+spring.application.name=bilimly-backend
+
+# PostgreSQL connection
+spring.datasource.url=jdbc:postgresql://localhost:5432/bilimly
+spring.datasource.username=YOUR_DB_USERNAME
+spring.datasource.password=YOUR_DB_PASSWORD
+spring.datasource.driver-class-name=org.postgresql.Driver
+
+# JPA (Hibernate) config
+spring.jpa.hibernate.ddl-auto=validate
+spring.jpa.show-sql=false
+spring.jpa.properties.hibernate.format_sql=true
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+
+# Server port
+server.port=8080
+
+# CORS
+spring.web.cors.allowed-origins=http://localhost:5173,http://127.0.0.1:5173,https://bilimly-ai.vercel.app
+spring.web.cors.allowed-methods=GET,POST,PUT,DELETE,OPTIONS
+spring.web.cors.allowed-headers=*
+spring.web.cors.allow-credentials=true
+
+# JWT — generate with: openssl rand -base64 64
+jwt.secret=${JWT_SECRET}
+
+# Claude (Anthropic) — get your key at console.anthropic.com
+claude.api.key=${CLAUDE_API_KEY}
+claude.model=claude-sonnet-4-5-20250929
+claude.max-tokens=4096
+
+# Gemini TTS — endpoint caches files, so repeated lesson playback does not call Gemini
+gemini.api.key=${GEMINI_API_KEY}
+gemini.tts.model=${GEMINI_TTS_MODEL:gemini-3.1-flash-tts-preview}
+gemini.tts.voice=${GEMINI_TTS_VOICE:Kore}
+tts.storage-dir=${TTS_STORAGE_DIR:${java.io.tmpdir}/bilimly-audio}
+tts.public-path=/audio
+tts.ffmpeg-binary=${FFMPEG_BINARY:ffmpeg}
+tts.cache.max-files=${TTS_CACHE_MAX_FILES:200}
+tts.cache.max-age-days=${TTS_CACHE_MAX_AGE_DAYS:30}
+
+# AI Rate Limiting
+ai.rate-limit.requests-per-minute=10
+ai.rate-limit.tokens-per-hour=50000
+
+# AI Response Caching
+ai.cache.enabled=true
+ai.cache.type=memory  # options: memory, redis
+
+# Redis (only needed if ai.cache.type=redis)
+# spring.data.redis.host=localhost
+# spring.data.redis.port=6379
+# spring.data.redis.password=
+# spring.data.redis.database=0
+
+# Request size limits
+spring.servlet.multipart.max-file-size=5MB
+spring.servlet.multipart.max-request-size=10MB
+server.max-http-header-size=16KB

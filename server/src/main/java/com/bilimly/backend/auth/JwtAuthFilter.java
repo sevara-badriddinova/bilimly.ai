@@ -1,5 +1,6 @@
 package com.bilimly.backend.auth;
 
+import com.bilimly.backend.analytics.UserActivityService;
 import com.bilimly.backend.user.User;
 import com.bilimly.backend.user.UserService;
 import jakarta.servlet.FilterChain;
@@ -22,15 +23,18 @@ import java.util.Optional;
 public class JwtAuthFilter extends OncePerRequestFilter {
     private final JwtTokenProvider jwtTokenProvider;
     private final UserService userService;
+    private final UserActivityService userActivityService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
+
         // grab authorization header
         String header = request.getHeader("Authorization");
+
         // other pages (login/sign up) don't need tokens
-        if (header == null || !header.startsWith("Bearer: ")){
+        if (header == null || !header.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -39,16 +43,20 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String token = header.substring(7);
 
         // check if token is valid and not expired
-        if(!jwtTokenProvider.validateToken(token)){
+        boolean isValid = jwtTokenProvider.validateToken(token);
+
+        if (!isValid) {
             filterChain.doFilter(request, response);
             return;
         }
 
         // open token & read email inside
         String email = jwtTokenProvider.getToken(token);
+
         // check if exists in db
         Optional<User> optUser = userService.findByEmail(email);
-        if (optUser.isEmpty()){
+
+        if (optUser.isEmpty()) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -62,6 +70,13 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         );
         // tell the Spring the user is logged in
         SecurityContextHolder.getContext().setAuthentication(auth);
+
+        // Set email as request attribute for controllers to access
+        request.setAttribute("email", email);
+        request.setAttribute("userId", user.getId());
+
+        userActivityService.recordAuthenticatedActivity(user.getId());
+
         filterChain.doFilter(request, response);
     }
 }
