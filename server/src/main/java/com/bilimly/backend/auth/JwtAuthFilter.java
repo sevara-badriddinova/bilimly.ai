@@ -1,5 +1,6 @@
 package com.bilimly.backend.auth;
 
+import com.bilimly.backend.analytics.UserActivityService;
 import com.bilimly.backend.user.User;
 import com.bilimly.backend.user.UserService;
 import jakarta.servlet.FilterChain;
@@ -22,6 +23,7 @@ import java.util.Optional;
 public class JwtAuthFilter extends OncePerRequestFilter {
     private final JwtTokenProvider jwtTokenProvider;
     private final UserService userService;
+    private final UserActivityService userActivityService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -71,6 +73,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         // Set email as request attribute for controllers to access
         request.setAttribute("email", email);
+        request.setAttribute("userId", user.getId());
+
+        userActivityService.recordAuthenticatedActivity(user.getId());
 
         filterChain.doFilter(request, response);
     }

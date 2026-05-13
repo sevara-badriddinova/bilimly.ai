@@ -22,7 +22,6 @@ export default function Navbar() {
     const currentLang = i18n.language?.slice(0, 2) || "en";
     const switchLanguage = (lng: string) => changeLanguage(lng);
     const navItems = [
-        {label: t("howItWorks.badge", "How it works"), href: "/#how-it-works"},
         {label: t("lessons", "Lessons"), href: isAuthenticated ? "/lessons" : "/#learning-path"},
         {label: "Pricing", href: "/pricing"},
     ];

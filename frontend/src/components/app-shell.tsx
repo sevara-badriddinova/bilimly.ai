@@ -13,6 +13,7 @@ import {
     Flame,
     GraduationCap,
     LogOut,
+    ShieldCheck,
 } from "lucide-react";
 import humoBird from "@/assets/humo-bird.png";
 import {LanguageSwitcher} from "@/components/language-switcher";
@@ -91,6 +92,9 @@ function Sidebar() {
                 {SECONDARY_NAV.map((item) => (
                     <NavLink key={item.to} item={item} pathname={pathname}/>
                 ))}
+                {user?.role === "ADMIN" && (
+                    <NavLink key="/admin" item={{to: "/admin", labelKey: "Admin", icon: ShieldCheck}} pathname={pathname}/>
+                )}
             </nav>
 
             <div className="mt-4 px-1">

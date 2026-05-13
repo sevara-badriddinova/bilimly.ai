@@ -21,6 +21,15 @@ const SpeakingPage = lazy(() => import('./pages/Speaking/SpeakingPage'))
 const ListeningPage = lazy(() => import('./pages/Listening/ListeningPage'))
 const AccountPage = lazy(() => import('./pages/Account/AccountPage'))
 const SettingsPage = lazy(() => import('./pages/SettingsPage'))
+const RequireAdmin = lazy(() => import('./layouts/RequireAdmin'))
+const AdminLayout = lazy(() => import('./layouts/AdminLayout'))
+const AdminOverviewPage = lazy(() => import('./pages/Admin/AdminOverviewPage'))
+const AdminAnalyticsPage = lazy(() => import('./pages/Admin/AdminAnalyticsPage'))
+const AdminUsersPage = lazy(() => import('./pages/Admin/AdminUsersPage'))
+const AdminTtsPage = lazy(() => import('./pages/Admin/AdminTtsPage'))
+const AdminAiPage = lazy(() => import('./pages/Admin/AdminAiPage'))
+const AdminAuditPage = lazy(() => import('./pages/Admin/AdminAuditPage'))
+const AdminSettingsPage = lazy(() => import('./pages/Admin/AdminSettingsPage'))
 
 function PageLoader() {
     return (
@@ -50,6 +59,19 @@ const router = createBrowserRouter([
     {
         element: <ProtectedLayout/>,
         children: [
+            {
+                path: "/admin",
+                element: wrap(<RequireAdmin><AdminLayout/></RequireAdmin>),
+                children: [
+                    {index: true, element: wrap(<AdminOverviewPage/>)},
+                    {path: "analytics", element: wrap(<AdminAnalyticsPage/>)},
+                    {path: "users", element: wrap(<AdminUsersPage/>)},
+                    {path: "tts", element: wrap(<AdminTtsPage/>)},
+                    {path: "ai", element: wrap(<AdminAiPage/>)},
+                    {path: "audit", element: wrap(<AdminAuditPage/>)},
+                    {path: "settings", element: wrap(<AdminSettingsPage/>)},
+                ],
+            },
             {
                 element: <AppLayout/>,
                 children: [

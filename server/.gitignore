@@ -27,3 +27,5 @@ logs/
 server/target/
 *.properties
 !**/application.properties.example
+
+handoff.md
