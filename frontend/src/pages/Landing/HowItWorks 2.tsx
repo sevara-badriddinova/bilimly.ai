@@ -1,6 +1,7 @@
 import React from "react"
 import {motion} from "framer-motion"
 import {useTranslation} from "react-i18next"
+import {ArrowRight} from "lucide-react"
 
 export default function HowItWorks() {
     const {t} = useTranslation()
@@ -107,13 +108,14 @@ export default function HowItWorks() {
                     </div>
                     <a href="/auth/sign-up">
                         <button
-                            className="shrink-0 px-7 py-3 rounded-xl text-sm font-bold transition-all hover:scale-105 active:scale-95"
+                            className="inline-flex shrink-0 items-center justify-center gap-2 px-7 py-3 rounded-xl text-sm font-bold transition-all hover:scale-105 active:scale-95"
                             style={{
                                 background: "linear-gradient(135deg, #0EA5C9, #0284C7)",
                                 color: "white",
                                 boxShadow: "0 8px 24px rgba(14,165,201,0.35)"
                             }}>
                             {t("howItWorks.cta.button")}
+                            <ArrowRight className="h-4 w-4 text-white"/>
                         </button>
                     </a>
                 </motion.div>

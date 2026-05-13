@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import {useParams, useNavigate} from 'react-router-dom';
 import {motion, AnimatePresence} from 'framer-motion';
+import {ArrowRight} from 'lucide-react';
 import {getListeningLessonById} from '../../data/listeningLessons';
 import {useProgress} from '../../hooks/useProgress';
 import {useTTS} from '../../hooks/useSpeech';
@@ -198,12 +199,13 @@ export default function ListeningLessonPage() {
 
                             {showResult && (
                                 <button onClick={handleNext}
-                                        className="w-full py-3 rounded-xl text-sm font-bold transition-all hover:scale-[1.02]"
+                                        className="inline-flex w-full items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all hover:scale-[1.02]"
                                         style={{
                                             background: 'linear-gradient(135deg, #F59E0B, #D97706)',
                                             color: 'white'
                                         }}>
-                                    {index + 1 < lesson.exercises.length ? 'Next Question →' : 'See Results →'}
+                                    {index + 1 < lesson.exercises.length ? 'Next Question' : 'See Results'}
+                                    <ArrowRight className="h-4 w-4 text-white"/>
                                 </button>
                             )}
                         </div>

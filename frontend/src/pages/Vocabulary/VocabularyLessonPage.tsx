@@ -1,5 +1,6 @@
 import {useState} from 'react';
 import {useParams, useNavigate} from 'react-router-dom';
+import {ArrowRight} from 'lucide-react';
 import {getVocabularyThemeById} from '../../data/vocabularyLessons';
 import type {VocabularyWord} from '../../types/lesson';
 
@@ -126,9 +127,10 @@ export default function VocabularyLessonPage() {
                 </button>
                 <button
                     onClick={handleNext}
-                    className="flex-1 bg-[#FFB703] text-[#023047] font-bold py-3 px-6 rounded-xl hover:bg-[#FB8500] transition-colors"
+                    className="inline-flex flex-1 items-center justify-center gap-2 bg-[#FFB703] text-[#023047] font-bold py-3 px-6 rounded-xl hover:bg-[#FB8500] transition-colors"
                 >
-                    {currentIndex < theme.words.length - 1 ? 'Next →' : 'Finish'}
+                    {currentIndex < theme.words.length - 1 ? 'Next' : 'Finish'}
+                    <ArrowRight className="h-4 w-4"/>
                 </button>
             </div>
 

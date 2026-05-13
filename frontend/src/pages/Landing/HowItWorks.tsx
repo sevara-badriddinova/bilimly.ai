@@ -2,6 +2,7 @@ import React from "react";
 import {motion} from "framer-motion";
 import {Link} from "react-router-dom";
 import {useTranslation} from "react-i18next";
+import {ArrowRight} from "lucide-react";
 import suzaniPattern from "../../assets/suzani-pattern.png";
 import anorMotif from "../../assets/anor-motif.png";
 import owlSuzani from "../../assets/owl-suzani.png";
@@ -208,9 +209,10 @@ export default function HowItWorks() {
                     </div>
                     <Link
                         to="/auth/sign-up"
-                        className="inline-flex h-12 items-center justify-center rounded-full bg-[#C44536] px-6 text-sm font-black text-white shadow-[0_14px_32px_rgba(196,69,54,0.22)] transition hover:-translate-y-0.5"
+                        className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-[#C44536] px-6 text-sm font-black text-white shadow-[0_14px_32px_rgba(196,69,54,0.22)] transition hover:-translate-y-0.5"
                     >
                         {t("howItWorks.cta.button", "Start free")}
+                        <ArrowRight className="h-4 w-4 text-white"/>
                     </Link>
                 </motion.div>
             </div>

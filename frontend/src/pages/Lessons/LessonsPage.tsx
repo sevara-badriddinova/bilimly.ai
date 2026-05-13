@@ -1,6 +1,6 @@
-import {Link} from "react-router-dom";
+import {Link, useLocation, useSearchParams} from "react-router-dom";
 import {useEffect, useMemo, useState} from "react";
-import {Flame, Zap, Lock, Check, GraduationCap, UserCircle, SlidersHorizontal, Target, X} from "lucide-react";
+import {Flame, Zap, Lock, Check, GraduationCap, UserCircle, SlidersHorizontal, Target, X, ArrowRight} from "lucide-react";
 import {useTranslation} from "react-i18next";
 import {LESSONS, getLessonCategory, getLessonLevel, getLessonText, type Lesson} from "@/data/lessons";
 import {useUserProgress} from "@/data/progress";
@@ -21,6 +21,8 @@ import ikatBorder from "@/assets/ikat-border.png";
 import anorMotif from "@/assets/anor-motif.png";
 
 const CATEGORY_KEYS = ["all", "grammar", "vocabulary", "speaking", "listening"] as const;
+type CategoryKey = (typeof CATEGORY_KEYS)[number];
+
 const CATEGORY_NAV_KEY: Record<(typeof CATEGORY_KEYS)[number], string> = {
     all: "lessonsPage.allCategory",
     grammar: "nav.grammar",
@@ -29,8 +31,19 @@ const CATEGORY_NAV_KEY: Record<(typeof CATEGORY_KEYS)[number], string> = {
     listening: "nav.listening",
 };
 
+function getCategoryKey(lesson: Lesson): Exclude<CategoryKey, "all"> {
+    if (lesson.category === "Lug'at") return "vocabulary";
+    if (lesson.category === "Gapirish") return "speaking";
+    if (lesson.category === "Tinglash") return "listening";
+    return "grammar";
+}
+
 export default function LessonsPage() {
     const {t} = useTranslation();
+    const location = useLocation();
+    const [searchParams, setSearchParams] = useSearchParams();
+    const embeddedInApp = location.pathname.startsWith("/app");
+    const lessonBasePath = embeddedInApp ? "/app/lessons" : "/lessons";
     const {user, isAuthenticated, isLoading} = useAuth();
     const {progress} = useUserProgress(user?.id);
     const [placement, setPlacement] = useState<PlacementResult | null>(() => loadPlacementResult(user?.id));
@@ -46,10 +59,22 @@ export default function LessonsPage() {
     );
     const recommendedLessonIds = useMemo(() => new Set(recommendedLessons.map((lesson) => lesson.id)), [recommendedLessons]);
     const startLesson = recommendedLessons[0] || LESSONS.find((lesson) => lesson.id === progress.currentLessonId) || LESSONS[0];
+    const categoryParam = searchParams.get("category");
+    const selectedCategory = CATEGORY_KEYS.includes(categoryParam as CategoryKey) ? categoryParam as CategoryKey : "all";
+    const filteredLessons = useMemo(
+        () => selectedCategory === "all" ? LESSONS : LESSONS.filter((lesson) => getCategoryKey(lesson) === selectedCategory),
+        [selectedCategory]
+    );
 
     useEffect(() => {
         setPlacement(loadPlacementResult(user?.id));
     }, [user?.id]);
+
+    useEffect(() => {
+        if (new URLSearchParams(location.search).get("placement") === "1") {
+            setShowPlacement(true);
+        }
+    }, [location.search]);
 
     function handlePlacementComplete(result: PlacementResult) {
         savePlacementResult(result, user?.id);
@@ -58,11 +83,25 @@ export default function LessonsPage() {
     }
 
     // Group by unit
-    const units = Array.from(new Set(LESSONS.map((l) => l.unit))).sort();
+    const units = Array.from(new Set(filteredLessons.map((l) => l.unit))).sort();
+
+    function lessonPath(lessonId: string) {
+        return `${lessonBasePath}/${lessonId}`;
+    }
+
+    function setCategory(category: CategoryKey) {
+        const next = new URLSearchParams(searchParams);
+        if (category === "all") {
+            next.delete("category");
+        } else {
+            next.set("category", category);
+        }
+        setSearchParams(next);
+    }
 
     return (
         <div className="min-h-screen overflow-hidden">
-            <div
+            {!embeddedInApp && <div
                 aria-hidden
                 className="w-full opacity-90"
                 style={{
@@ -71,9 +110,9 @@ export default function LessonsPage() {
                     backgroundSize: "auto 100%",
                     height: "18px",
                 }}
-            />
+            />}
 
-            <header className="mx-auto flex max-w-6xl items-center justify-between px-6 py-6">
+            {!embeddedInApp && <header className="mx-auto flex max-w-6xl items-center justify-between px-6 py-6">
                 <Link to="/" className="flex items-center gap-2">
           <span className="grid h-9 w-9 place-items-center rounded-xl bg-primary text-primary-foreground">
             <GraduationCap size={20} strokeWidth={2.25}/>
@@ -106,10 +145,10 @@ export default function LessonsPage() {
                         </Link>
                     )}
                 </div>
-            </header>
+            </header>}
 
             {/* Hero / progress */}
-            <section className="mx-auto max-w-6xl px-6 pt-6 pb-12 md:pt-12">
+            <section className={`${embeddedInApp ? "px-0 pb-10 pt-0" : "mx-auto max-w-6xl px-6 pt-6 pb-12 md:pt-12"}`}>
                 <div className="grid items-center gap-10 md:grid-cols-[1fr_auto]">
                     <div>
             <span
@@ -125,11 +164,11 @@ export default function LessonsPage() {
                         </p>
                         <div className="mt-7 flex flex-col gap-3 sm:flex-row">
                             <Link
-                                to={`/lessons/${startLesson.id}`}
+                                to={lessonPath(startLesson.id)}
                                 className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-7 py-4 text-sm font-black text-primary-foreground shadow-[5px_5px_0_0_oklch(0.30_0.10_280)] transition hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[7px_7px_0_0_oklch(0.30_0.10_280)]"
                             >
                                 {t("lessonsPage.ctaButton")} · {getLessonText(startLesson).title}
-                                <span>→</span>
+                                <ArrowRight className="h-4 w-4 text-primary-foreground"/>
                             </Link>
                             <button
                                 type="button"
@@ -208,7 +247,7 @@ export default function LessonsPage() {
                             {recommendedLessons.map((lesson) => (
                                 <Link
                                     key={lesson.id}
-                                    to={`/lessons/${lesson.id}`}
+                                    to={lessonPath(lesson.id)}
                                     className="rounded-2xl border-2 border-foreground/10 bg-card p-4 transition hover:-translate-y-1 hover:border-primary"
                                 >
                                     <p className="text-xs font-semibold uppercase tracking-widest text-primary">
@@ -226,11 +265,13 @@ export default function LessonsPage() {
             {/* Filters */}
             <section className="mx-auto max-w-6xl px-6">
                 <div className="flex flex-wrap gap-2">
-                    {CATEGORY_KEYS.map((c, i) => (
+                    {CATEGORY_KEYS.map((c) => (
                         <button
                             key={c}
+                            type="button"
+                            onClick={() => setCategory(c)}
                             className={`rounded-full border-2 px-4 py-2 text-sm font-medium transition ${
-                                i === 0
+                                selectedCategory === c
                                     ? "border-primary bg-primary text-primary-foreground"
                                     : "border-foreground/10 bg-card hover:border-primary/40"
                             }`}
@@ -244,7 +285,7 @@ export default function LessonsPage() {
             {/* Units */}
             <section className="mx-auto max-w-6xl px-6 py-12">
                 {units.map((unit) => {
-                    const items = LESSONS.filter((l) => l.unit === unit);
+                    const items = filteredLessons.filter((l) => l.unit === unit);
                     return (
                         <div key={unit} className="mb-14">
                             <div className="mb-6 flex items-baseline gap-4">
@@ -260,6 +301,7 @@ export default function LessonsPage() {
                                 {items.map((lesson) => (
                                     <LessonCard
                                         key={lesson.id}
+                                        href={lessonPath(lesson.id)}
                                         recommended={recommendedLessonIds.has(lesson.id)}
                                         lesson={{
                                             ...lesson,
@@ -298,11 +340,11 @@ export default function LessonsPage() {
                             {t("lessonsPage.ctaBody")}
                         </p>
                         <Link
-                            to="/lessons/03-to-be"
+                            to={lessonPath("03-to-be")}
                             className="mt-8 inline-flex items-center gap-2 rounded-full bg-accent px-7 py-4 text-sm font-semibold text-accent-foreground shadow-[4px_4px_0_0_oklch(0.45_0.17_22)] transition hover:translate-x-[-2px] hover:translate-y-[-2px]"
                         >
                             {t("lessonsPage.ctaButton")}
-                            <span>→</span>
+                            <ArrowRight className="h-4 w-4 text-accent-foreground"/>
                         </Link>
                     </div>
                 </div>
@@ -344,7 +386,7 @@ function Stat({n, label, icon: Icon}: {
     );
 }
 
-function LessonCard({lesson, recommended = false}: { lesson: Lesson; recommended?: boolean }) {
+function LessonCard({lesson, href, recommended = false}: { lesson: Lesson; href: string; recommended?: boolean }) {
     const {t, i18n} = useTranslation();
     const language = i18n.resolvedLanguage || i18n.language;
     const text = getLessonText(lesson, language);
@@ -404,6 +446,7 @@ function LessonCard({lesson, recommended = false}: { lesson: Lesson; recommended
             {!isLocked && (
                 <div className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-bold text-primary-foreground shadow-[3px_3px_0_0_oklch(0.30_0.10_280)] transition group-hover:translate-x-[-1px] group-hover:translate-y-[-1px]">
                     {isCurrent ? t("lessonsPage.continueRibbon") : t("lessonsPage.startLesson", "Start lesson")}
+                    <ArrowRight className="h-4 w-4 text-primary-foreground transition group-hover:translate-x-0.5"/>
                 </div>
             )}
         </div>
@@ -412,7 +455,7 @@ function LessonCard({lesson, recommended = false}: { lesson: Lesson; recommended
     if (isLocked) return <div className="cursor-not-allowed">{card}</div>;
 
     return (
-        <Link to={`/lessons/${lesson.id}`} className="block">
+        <Link to={href} className="block">
             {card}
         </Link>
     );

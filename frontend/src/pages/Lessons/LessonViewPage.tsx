@@ -1,8 +1,8 @@
-import {Link, useParams} from "react-router-dom";
+import {Link, useLocation, useParams} from "react-router-dom";
 import {useEffect, useMemo, useState} from "react";
 import {useTranslation} from "react-i18next";
 import {AnimatePresence, motion} from "framer-motion";
-import {Zap, Flame, Check, X, Lightbulb, ArrowLeft} from "lucide-react";
+import {Zap, Flame, Check, X, Lightbulb, ArrowLeft, ArrowRight} from "lucide-react";
 import {
     getLesson,
     getLessonCategory,
@@ -288,11 +288,13 @@ function getSkillForLesson(lesson: Lesson): SkillId {
 
 function ErrorView({message}: { message: string }) {
     const {t} = useTranslation();
+    const location = useLocation();
+    const lessonListPath = location.pathname.startsWith("/app") ? "/app/lessons" : "/lessons";
     return (
         <div className="mx-auto max-w-xl px-6 py-20 text-center">
             <h1 className="text-display text-3xl">{t("lessonPlayer.errorTitle")}</h1>
             <p className="mt-2 text-muted-foreground">{message}</p>
-            <Link to="/lessons"
+            <Link to={lessonListPath}
                   className="mt-6 inline-block text-primary hover:underline">← {t("lessonPlayer.backToLessons")}</Link>
         </div>
     );
@@ -300,10 +302,12 @@ function ErrorView({message}: { message: string }) {
 
 function NotFoundView() {
     const {t} = useTranslation();
+    const location = useLocation();
+    const lessonListPath = location.pathname.startsWith("/app") ? "/app/lessons" : "/lessons";
     return (
         <div className="mx-auto max-w-xl px-6 py-20 text-center">
             <h1 className="text-display text-4xl">{t("lessonPlayer.notFound")}</h1>
-            <Link to="/lessons"
+            <Link to={lessonListPath}
                   className="mt-6 inline-block text-primary hover:underline">← {t("lessonPlayer.backToLessons")}</Link>
         </div>
     );
@@ -311,10 +315,14 @@ function NotFoundView() {
 
 export default function LessonPage() {
     const {t, i18n} = useTranslation();
+    const location = useLocation();
     const {user} = useAuth();
     const {progress, updateProgress} = useUserProgress(user?.id);
     const language = i18n.resolvedLanguage || i18n.language;
     const {id = ""} = useParams();
+    const embeddedInApp = location.pathname.startsWith("/app");
+    const lessonListPath = embeddedInApp ? "/app/lessons" : "/lessons";
+    const lessonPath = (lessonId: string) => `${lessonListPath}/${lessonId}`;
     const lesson = getLesson(id);
     if (!lesson) return <NotFoundView/>;
     const next = getNextLesson(lesson.id);
@@ -417,7 +425,7 @@ export default function LessonPage() {
 
             {/* Lesson top bar */}
             <header className="mx-auto flex max-w-5xl items-center justify-between px-6 py-5">
-                <Link to="/lessons"
+                <Link to={lessonListPath}
                       className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
                     <ArrowLeft className="h-4 w-4"/> {t("lessonPlayer.backToLessons")}
                 </Link>
@@ -543,7 +551,8 @@ export default function LessonPage() {
                                     onClick={continuePractice}
                                     className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-[4px_4px_0_0_oklch(0.30_0.10_280)] transition hover:translate-x-[-2px] hover:translate-y-[-2px]"
                                 >
-                                    {boundedPracticeIndex < practiceQuestions.length - 1 ? t("common.continue") : t("lessonPlayer.steps.done")} →
+                                    {boundedPracticeIndex < practiceQuestions.length - 1 ? t("common.continue") : t("lessonPlayer.steps.done")}
+                                    <ArrowRight className="h-4 w-4 text-primary-foreground"/>
                                 </button>
                             )}
                         </div>
@@ -582,18 +591,19 @@ export default function LessonPage() {
 
                         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
                             <Link
-                                to="/lessons"
+                                to={lessonListPath}
                                 className="rounded-full border-2 border-foreground/10 bg-card px-6 py-3 text-sm font-semibold hover:bg-muted"
                             >
                                 {t("lessonPlayer.backList")}
                             </Link>
                             {next && (
                                 <Link
-                                    to={`/lessons/${next.id}`}
+                                    to={lessonPath(next.id)}
                                     onClick={() => resetLessonFlow(next.id, user?.id)}
                                     className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-[4px_4px_0_0_oklch(0.30_0.10_280)] transition hover:translate-x-[-2px] hover:translate-y-[-2px]"
                                 >
-                                    {t("lessonPlayer.nextLesson")}: {getLessonText(next, language).title} →
+                                    {t("lessonPlayer.nextLesson")}: {getLessonText(next, language).title}
+                                    <ArrowRight className="h-4 w-4 text-primary-foreground"/>
                                 </Link>
                             )}
                         </div>
@@ -606,7 +616,7 @@ export default function LessonPage() {
                 <div className="mt-10 flex items-center justify-between gap-4">
                     {prev ? (
                         <Link
-                            to={`/lessons/${prev.id}`}
+                            to={lessonPath(prev.id)}
                             className="group flex-1 rounded-2xl border-2 border-foreground/10 bg-card p-4 transition hover:border-primary"
                         >
                             <div
@@ -616,7 +626,7 @@ export default function LessonPage() {
                     ) : <div className="flex-1"/>}
                     {next ? (
                         <Link
-                            to={`/lessons/${next.id}`}
+                            to={lessonPath(next.id)}
                             className="group flex-1 rounded-2xl border-2 border-foreground/10 bg-card p-4 text-right transition hover:border-primary"
                         >
                             <div
@@ -682,7 +692,8 @@ function LearnSection({detail, onContinue}: { detail: LessonDetail; onContinue: 
                     onClick={onContinue}
                     className="mt-7 inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-7 py-4 text-sm font-bold text-primary-foreground shadow-[5px_5px_0_0_oklch(0.30_0.10_280)] transition hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[7px_7px_0_0_oklch(0.30_0.10_280)] sm:w-auto"
                 >
-                    {t("lessonPlayer.steps.practice")} →
+                    {t("lessonPlayer.steps.practice")}
+                    <ArrowRight className="h-4 w-4 text-primary-foreground"/>
                 </button>
             </div>
 

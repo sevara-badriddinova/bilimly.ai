@@ -13,7 +13,6 @@ import {
     Utensils,
     BriefcaseBusiness,
     GraduationCap,
-    ArrowRight,
     FlipHorizontal,
     type LucideIcon,
 } from "lucide-react";
@@ -433,8 +432,7 @@ export default function Vocabulary() {
                                 <Bookmark className="h-4 w-4"/>}
                             {saved.has(card.word) ? t("vocabulary.saved") : t("vocabulary.save")}
                         </GhostButton>
-                        <PrimaryButton onClick={next}>{t("vocabulary.next")} <ArrowRight
-                            className="h-4 w-4"/></PrimaryButton>
+                        <PrimaryButton onClick={next}>{t("vocabulary.next")}</PrimaryButton>
                     </div>
                 </div>
             </div>

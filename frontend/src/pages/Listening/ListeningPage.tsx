@@ -17,10 +17,9 @@ import {
 } from "lucide-react";
 import {Card, Pill, SectionHeading, Progress} from "@/components/ui-kit";
 import {IconBadge, type IconTone} from "@/components/icon-badge";
-import {getToken, useAuth} from "@/context/AuthContext";
+import {useAuth} from "@/context/AuthContext";
 import {useUserProgress} from "@/data/progress";
 import {getUiLang} from "@/data/lessons";
-import {generateTts, resolveApiUrl} from "@/services/api";
 
 const LEVEL_KEYS = ["all", "beginner", "intermediate", "advanced"] as const;
 const LEVEL_MAP: Record<string, (typeof LEVEL_KEYS)[number]> = {
@@ -268,8 +267,7 @@ const LISTENING_UI = {
         wrong: "Not quite. ",
         loading: "Preparing audio...",
         error: "Audio could not play. Please try again.",
-        authRequired: "Please sign in again to load audio.",
-        cached: "Cached audio",
+        paused: "Paused",
     },
     uz: {
         check: "Tushunishni tekshirish",
@@ -279,8 +277,7 @@ const LISTENING_UI = {
         wrong: "Noto'g'ri. ",
         loading: "Audio tayyorlanmoqda...",
         error: "Audioni ijro qilib bo'lmadi. Qayta urinib ko'ring.",
-        authRequired: "Audioni yuklash uchun qayta kiring.",
-        cached: "Keshlangan audio",
+        paused: "Pauza",
     },
     ru: {
         check: "Проверка понимания",
@@ -290,8 +287,7 @@ const LISTENING_UI = {
         wrong: "Не совсем. ",
         loading: "Готовим аудио...",
         error: "Не удалось воспроизвести аудио. Попробуйте ещё раз.",
-        authRequired: "Войдите снова, чтобы загрузить аудио.",
-        cached: "Аудио из кэша",
+        paused: "Пауза",
     },
 };
 
@@ -340,7 +336,6 @@ export default function Listening() {
     const [playing, setPlaying] = useState(false);
     const [loadingAudio, setLoadingAudio] = useState(false);
     const [audioError, setAudioError] = useState("");
-    const [audioCached, setAudioCached] = useState<boolean | null>(null);
     const [level, setLevel] = useState<(typeof LEVEL_KEYS)[number]>("all");
     const [currentId, setCurrentId] = useState(TRACKS[0].id);
     const [elapsed, setElapsed] = useState(0);
@@ -348,8 +343,10 @@ export default function Listening() {
     const [showResult, setShowResult] = useState(false);
     const [hasPlayed, setHasPlayed] = useState(false);
     const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-    const audioRef = useRef<HTMLAudioElement | null>(null);
+    const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
     const activeTrackRef = useRef<number | null>(null);
+    const startedAtRef = useRef(0);
+    const elapsedBaseRef = useRef(0);
     const completedRef = useRef(new Set<string>());
     const filtered = TRACKS.filter((tr) => level === "all" || LEVEL_MAP[tr.level] === level);
     const completedIds = progress.listening.completedTrackIds;
@@ -361,7 +358,7 @@ export default function Listening() {
 
     useEffect(() => {
         return () => {
-            cleanupAudio();
+            cleanupSpeech();
             if (timerRef.current) clearInterval(timerRef.current);
         };
     }, []);
@@ -388,14 +385,11 @@ export default function Listening() {
         setHasPlayed(false);
     };
 
-    const cleanupAudio = () => {
-        if (audioRef.current) {
-            audioRef.current.pause();
-            audioRef.current.src = "";
-            audioRef.current.load();
-            audioRef.current = null;
-        }
+    const cleanupSpeech = () => {
+        window.speechSynthesis.cancel();
+        utteranceRef.current = null;
         activeTrackRef.current = null;
+        elapsedBaseRef.current = 0;
     };
 
     const stopTimer = () => {
@@ -404,27 +398,25 @@ export default function Listening() {
     };
 
     const stopAudio = () => {
-        cleanupAudio();
+        cleanupSpeech();
         stopTimer();
         setPlaying(false);
     };
 
-    const startProgressTimer = (audio: HTMLAudioElement, track: Track) => {
+    const startProgressTimer = (track: Track) => {
         stopTimer();
+        startedAtRef.current = Date.now();
         timerRef.current = setInterval(() => {
-            setElapsed(Math.min(track.seconds, Math.floor(audio.currentTime)));
+            const seconds = elapsedBaseRef.current + Math.floor((Date.now() - startedAtRef.current) / 1000);
+            setElapsed(Math.min(track.seconds, seconds));
         }, 250);
     };
 
     const playAudio = async (track = current) => {
-        if (activeTrackRef.current === track.id && audioRef.current && audioRef.current.paused) {
-            try {
-                await audioRef.current.play();
-                startProgressTimer(audioRef.current, track);
-                setPlaying(true);
-            } catch {
-                setAudioError(LISTENING_UI[lang].error);
-            }
+        if (activeTrackRef.current === track.id && utteranceRef.current && window.speechSynthesis.paused) {
+            window.speechSynthesis.resume();
+            startProgressTimer(track);
+            setPlaying(true);
             return;
         }
 
@@ -432,49 +424,45 @@ export default function Listening() {
         setCurrentId(track.id);
         setElapsed(0);
         setAudioError("");
-        setAudioCached(null);
         if (track.id !== current.id) {
             resetQuiz();
         }
 
-        const token = getToken();
-
         setLoadingAudio(true);
         try {
-            const response = await generateTts(token ?? "", `listening-${track.id}`, transcriptText(track));
-            const audio = new Audio(resolveApiUrl(response.audioUrl));
-            audio.preload = "auto";
-            audioRef.current = audio;
-            activeTrackRef.current = track.id;
-            setAudioCached(response.cached);
+            if (!("speechSynthesis" in window)) {
+                throw new Error("Speech synthesis is not supported in this browser.");
+            }
 
-            audio.onloadedmetadata = () => {
-                if (Number.isFinite(audio.duration) && audio.duration > 0) {
-                    setElapsed(Math.min(track.seconds, Math.floor(audio.currentTime)));
-                }
-            };
-            audio.ontimeupdate = () => {
-                setElapsed(Math.min(track.seconds, Math.floor(audio.currentTime)));
-            };
-            audio.onended = () => {
+            const utterance = new SpeechSynthesisUtterance(transcriptText(track));
+            utterance.lang = "en-US";
+            utterance.rate = 0.86;
+            utterance.pitch = 1;
+            utteranceRef.current = utterance;
+            activeTrackRef.current = track.id;
+            elapsedBaseRef.current = 0;
+
+            utterance.onend = () => {
                 stopTimer();
                 setElapsed(track.seconds);
                 setPlaying(false);
                 setHasPlayed(true);
+                utteranceRef.current = null;
+                activeTrackRef.current = null;
             };
-            audio.onerror = () => {
+            utterance.onerror = () => {
                 stopTimer();
                 setPlaying(false);
                 setAudioError(LISTENING_UI[lang].error);
+                utteranceRef.current = null;
+                activeTrackRef.current = null;
             };
 
-            await audio.play();
-            startProgressTimer(audio, track);
+            window.speechSynthesis.speak(utterance);
+            startProgressTimer(track);
             setPlaying(true);
         } catch (error) {
-            setAudioError(error instanceof Error && error.message === "AUTH_REQUIRED"
-                ? LISTENING_UI[lang].authRequired
-                : LISTENING_UI[lang].error);
+            setAudioError(error instanceof Error ? error.message : LISTENING_UI[lang].error);
         } finally {
             setLoadingAudio(false);
         }
@@ -482,8 +470,9 @@ export default function Listening() {
 
     const toggleAudio = () => {
         if (playing) {
-            audioRef.current?.pause();
+            window.speechSynthesis.pause();
             stopTimer();
+            elapsedBaseRef.current = elapsed;
             setPlaying(false);
         } else {
             playAudio();
@@ -495,7 +484,6 @@ export default function Listening() {
         setCurrentId(track.id);
         setElapsed(0);
         setAudioError("");
-        setAudioCached(null);
         resetQuiz();
     };
 
@@ -544,9 +532,9 @@ export default function Listening() {
                                 <span
                                     className="font-mono text-sm text-muted-foreground">{formatTime(elapsed)} / {current.duration}</span>
                             </div>
-                            {(loadingAudio || audioError || audioCached !== null) && (
+                            {(loadingAudio || audioError || (!playing && utteranceRef.current)) && (
                                 <p className={`mt-3 text-sm ${audioError ? "text-destructive" : "text-muted-foreground"}`}>
-                                    {audioError || (loadingAudio ? LISTENING_UI[lang].loading : audioCached ? LISTENING_UI[lang].cached : "")}
+                                    {audioError || (loadingAudio ? LISTENING_UI[lang].loading : LISTENING_UI[lang].paused)}
                                 </p>
                             )}
                         </div>

@@ -5,7 +5,6 @@ import {
     Flame,
     Trophy,
     Target,
-    ArrowRight,
     BookOpen,
     Sparkles,
     Headphones,
@@ -21,10 +20,20 @@ import {IconBadge, type IconTone} from "@/components/icon-badge";
 import {getUserDisplayName, useAuth} from "@/context/AuthContext";
 import {useUserProgress} from "@/data/progress";
 import {LESSONS, getLessonText} from "@/data/lessons";
+import {loadPlacementResult} from "@/data/placement";
 import humoBird from "@/assets/humo-bird.png";
 
+type LessonFlowState = {
+    step?: "learn" | "practice" | "done";
+    practiceIndex?: number;
+    selected?: number | null;
+    revealed?: boolean;
+};
+
+const LESSON_FLOW_PREFIX = "bilimly_lesson_flow";
+
 const SKILLS = [
-    {id: "grammar", labelKey: "nav.grammar", icon: BookOpen, to: "/app/grammar", tone: "primary" as IconTone},
+    {id: "grammar", labelKey: "nav.grammar", icon: BookOpen, to: "/app/lessons?category=grammar", tone: "primary" as IconTone},
     {id: "vocab", labelKey: "nav.vocabulary", icon: Sparkles, to: "/app/vocabulary", tone: "secondary" as IconTone},
     {id: "listening", labelKey: "nav.listening", icon: Headphones, to: "/app/listening", tone: "accent" as IconTone},
     {id: "speaking", labelKey: "nav.speaking", icon: Mic, to: "/app/speaking", tone: "primary" as IconTone},
@@ -53,6 +62,8 @@ export default function Dashboard() {
     const recentLessons = progress.recentLessons
         .map((id) => LESSONS.find((lesson) => lesson.id === id))
         .filter((lesson): lesson is NonNullable<typeof lesson> => Boolean(lesson));
+    const placement = loadPlacementResult(user?.id);
+    const nextAction = getDashboardNextAction(progress, user?.id, language, t);
     const dailyGoalProgress = progress.dailyGoalXp > 0 ? Math.round((progress.xpToday / progress.dailyGoalXp) * 100) : 0;
     const dailyGoalRemaining = Math.max(progress.dailyGoalXp - progress.xpToday, 0);
     const displayName = getUserDisplayName(user);
@@ -82,26 +93,41 @@ export default function Dashboard() {
             </div>
 
             {/* Continue learning hero */}
-            <Card variant="raised" className="relative overflow-hidden p-8 md:p-10">
+            <Card variant="raised" className="relative overflow-hidden p-0">
                 <img
                     src={humoBird}
                     alt=""
                     width={200}
                     height={200}
-                    className="pointer-events-none absolute -right-6 -bottom-6 hidden h-44 w-44 object-contain opacity-90 md:block"
+                    className="pointer-events-none absolute -right-7 -bottom-8 hidden h-48 w-48 object-contain opacity-90 md:block"
                 />
-                <div className="relative max-w-xl">
-                    <Pill tone="primary"><Flame className="h-3 w-3"/> {t("dashboard.continueBadge")}</Pill>
-                    <h2 className="text-display mt-4 text-2xl md:text-3xl">{t("dashboard.continueTitle")}</h2>
-                    <p className="mt-2 text-muted-foreground">{t("dashboard.continueMeta")}</p>
-                    <div className="mt-5 max-w-sm">
-                        <Progress value={progress.lessonProgress} label={t("dashboard.lessonProgress")}/>
+                <div className="relative grid gap-6 p-7 md:grid-cols-[1fr_auto] md:p-9">
+                    <div className="max-w-2xl">
+                        <Pill tone="primary">
+                            {nextAction.kind === "placement" ? <Target className="h-3 w-3"/> : <Flame className="h-3 w-3"/>}
+                            {nextAction.badge}
+                        </Pill>
+                        <h2 className="text-display mt-4 text-3xl leading-tight md:text-5xl">{nextAction.title}</h2>
+                        <p className="mt-3 text-lg text-muted-foreground">{nextAction.meta}</p>
+                        <div className="mt-6 max-w-xl">
+                            <Progress value={nextAction.progress} label={nextAction.progressLabel}/>
+                        </div>
+                        <div className="mt-6 flex flex-wrap items-center gap-3">
+                            <Link to={nextAction.to} className="inline-block">
+                                <PrimaryButton>{nextAction.cta}</PrimaryButton>
+                            </Link>
+                            {nextAction.kind !== "placement" && !placement && (
+                                <Link to="/app/lessons?placement=1" className="text-sm font-semibold text-primary hover:underline">
+                                    {t("dashboard.recommendation.checkLevelLink")}
+                                </Link>
+                            )}
+                        </div>
                     </div>
-                    <Link to={`/lessons/${progress.currentLessonId}`} className="mt-6 inline-block">
-                        <PrimaryButton>
-                            {t("dashboard.continueBadge")} <ArrowRight className="h-4 w-4"/>
-                        </PrimaryButton>
-                    </Link>
+                    <div className="hidden w-48 self-end rounded-2xl border-2 border-foreground/10 bg-background/70 p-4 md:block">
+                        <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">{t("dashboard.recommendation.nextStep")}</p>
+                        <p className="text-display mt-2 text-xl leading-tight">{nextAction.cardTitle}</p>
+                        <p className="mt-2 text-sm text-muted-foreground">{nextAction.cardMeta}</p>
+                    </div>
                 </div>
             </Card>
 
@@ -175,13 +201,13 @@ export default function Dashboard() {
             <div>
                 <div className="mb-4 flex items-center justify-between">
                     <h2 className="text-display text-2xl">{t("dashboard.recent")}</h2>
-                    <Link to="/lessons" className="text-sm font-semibold text-primary hover:underline">
+                    <Link to="/app/lessons" className="text-sm font-semibold text-primary hover:underline">
                         {t("common.viewAll")} →
                     </Link>
                 </div>
                 <div className="grid gap-3">
                     {recentLessons.map((r) => (
-                        <Link key={r.id} to={`/lessons/${r.id}`}>
+                        <Link key={r.id} to={`/app/lessons/${r.id}`}>
                             <motion.div whileHover={{x: 4}}>
                                 <Card className="flex items-center gap-4 hover:border-primary">
                                     <IconBadge icon={r.icon} tone={r.tone} size="md" hover={false}/>
@@ -207,4 +233,74 @@ export default function Dashboard() {
             </div>
         </div>
     );
+}
+
+function getDashboardNextAction(progress: ReturnType<typeof useUserProgress>["progress"], userId: number | string | undefined, language: string, t: ReturnType<typeof useTranslation>["t"]) {
+    const hasAnyProgress = progress.completedLessonIds.length > 0
+        || progress.recentLessons.length > 0
+        || progress.totalXp > 0
+        || progress.xpToday > 0
+        || progress.lessonProgress > 0;
+    const placement = loadPlacementResult(userId);
+    const recommendedLesson = placement?.recommendedLessonIds
+        .map((id) => LESSONS.find((lesson) => lesson.id === id))
+        .find(Boolean);
+
+    if (!hasAnyProgress && !placement) {
+        return {
+            kind: "placement" as const,
+            badge: t("dashboard.recommendation.placementBadge"),
+            title: t("dashboard.recommendation.placementTitle"),
+            meta: t("dashboard.recommendation.placementMeta"),
+            progress: 0,
+            progressLabel: t("dashboard.recommendation.placementProgress"),
+            to: "/app/lessons?placement=1",
+            cta: t("dashboard.recommendation.placementCta"),
+            cardTitle: t("dashboard.recommendation.placementCardTitle"),
+            cardMeta: t("dashboard.recommendation.placementCardMeta"),
+        };
+    }
+
+    const lesson = LESSONS.find((item) => item.id === progress.currentLessonId)
+        || recommendedLesson
+        || LESSONS.find((item) => !progress.completedLessonIds.includes(item.id))
+        || LESSONS[0];
+    const lessonText = getLessonText(lesson, language);
+    const flow = loadDashboardLessonFlow(lesson.id, userId);
+    const inLessonProgress = progress.completedLessonIds.includes(lesson.id)
+        ? 100
+        : getFlowProgress(flow, progress.lessonProgress);
+    const kind = inLessonProgress > 0 ? "continue" as const : "suggest" as const;
+
+    return {
+        kind,
+        badge: kind === "continue" ? t("dashboard.recommendation.continueBadge") : t("dashboard.recommendation.suggestedBadge"),
+        title: kind === "continue"
+            ? t("dashboard.recommendation.continueTitle", {lesson: lessonText.title})
+            : t("dashboard.recommendation.suggestedTitle", {lesson: lessonText.title}),
+        meta: t("dashboard.recommendation.lessonMeta", {category: lesson.category, minutes: lesson.minutes, xp: lesson.xp}),
+        progress: inLessonProgress,
+        progressLabel: kind === "continue" ? t("dashboard.lessonProgress") : t("dashboard.recommendation.startProgress"),
+        to: `/app/lessons/${lesson.id}`,
+        cta: kind === "continue" ? t("dashboard.continueCta") : t("dashboard.recommendation.startLessonCta"),
+        cardTitle: lessonText.title,
+        cardMeta: lessonText.summary,
+    };
+}
+
+function loadDashboardLessonFlow(lessonId: string, userId?: number | string): LessonFlowState {
+    try {
+        const owner = userId === undefined || userId === null ? "guest" : userId;
+        const saved = localStorage.getItem(`${LESSON_FLOW_PREFIX}:${owner}:${lessonId}`);
+        return saved ? JSON.parse(saved) as LessonFlowState : {};
+    } catch {
+        return {};
+    }
+}
+
+function getFlowProgress(flow: LessonFlowState, fallback: number) {
+    if (flow.step === "done") return 100;
+    if (flow.step === "practice") return Math.min(95, 45 + Math.max(0, Number(flow.practiceIndex) || 0) * 15 + (flow.revealed ? 10 : 0));
+    if (flow.step === "learn") return 20;
+    return Math.max(0, Math.min(100, fallback));
 }

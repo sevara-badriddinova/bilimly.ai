@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {useProgress} from '../../hooks/useProgress';
 import {useParams, useNavigate} from 'react-router-dom';
 import {motion, AnimatePresence} from 'framer-motion';
+import {ArrowRight} from 'lucide-react';
 
 const LESSONS: Record<string, {
     title: string; titleUz: string; color: string; icon: string;
@@ -299,12 +300,13 @@ export default function GrammarLessonPage() {
                         </AnimatePresence>
                         {showResult && (
                             <button onClick={handleNext}
-                                    className="w-full py-2.5 rounded-xl text-sm font-bold transition-all hover:scale-[1.02]"
+                                    className="inline-flex w-full items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-bold transition-all hover:scale-[1.02]"
                                     style={{
                                         background: `linear-gradient(135deg, ${lesson.color}, ${lesson.color}cc)`,
                                         color: 'white'
                                     }}>
-                                {quizIndex + 1 < lesson.quiz.length ? 'Next Question →' : 'See Results →'}
+                                {quizIndex + 1 < lesson.quiz.length ? 'Next Question' : 'See Results'}
+                                <ArrowRight className="h-4 w-4 text-white"/>
                             </button>
                         )}
                     </>

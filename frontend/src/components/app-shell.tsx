@@ -1,9 +1,12 @@
 import {Link, useLocation, useNavigate} from "react-router-dom";
 import {motion} from "framer-motion";
+import {useEffect, useState} from "react";
 import {useTranslation} from "react-i18next";
 import {
     LayoutDashboard,
     BookOpen,
+    PanelLeftClose,
+    PanelLeftOpen,
     Sparkles,
     Headphones,
     Mic,
@@ -19,6 +22,8 @@ import humoBird from "@/assets/humo-bird.png";
 import {LanguageSwitcher} from "@/components/language-switcher";
 import {getUserDisplayName, useAuth} from "@/context/AuthContext";
 
+const SIDEBAR_KEY = "app_sidebar_hidden";
+
 type NavItem = {
     to: string;
     labelKey: string;
@@ -28,7 +33,7 @@ type NavItem = {
 
 export const NAV_ITEMS: NavItem[] = [
     {to: "/app", labelKey: "nav.dashboard", icon: LayoutDashboard, exact: true},
-    {to: "/app/grammar", labelKey: "nav.grammar", icon: BookOpen},
+    {to: "/app/lessons", labelKey: "nav.lessons", icon: BookOpen},
     {to: "/app/vocabulary", labelKey: "nav.vocabulary", icon: Sparkles},
     {to: "/app/listening", labelKey: "nav.listening", icon: Headphones},
     {to: "/app/speaking", labelKey: "nav.speaking", icon: Mic},
@@ -66,6 +71,19 @@ function Sidebar() {
     const {t} = useTranslation();
     const {user, logout} = useAuth();
     const displayName = getUserDisplayName(user);
+    const [sidebarHidden, setSidebarHidden] = useState(false);
+
+    useEffect(() => {
+        setSidebarHidden(localStorage.getItem(SIDEBAR_KEY) === "true");
+    }, []);
+
+    const toggleSidebar = () => {
+        setSidebarHidden((current) => {
+            const next = !current;
+            localStorage.setItem(SIDEBAR_KEY, String(next));
+            return next;
+        });
+    };
 
     const handleLogout = () => {
         logout();
@@ -74,55 +92,66 @@ function Sidebar() {
 
     return (
         <aside
-            className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-r border-border bg-card/40 px-4 py-6 md:flex">
-            <Link to="/" className="flex items-center gap-2 px-2">
-        <span className="grid h-9 w-9 place-items-center rounded-xl bg-primary text-primary-foreground">
+            className={`sticky top-0 hidden h-screen shrink-0 flex-col border-r border-border bg-card/40 px-3 py-6 transition-[width] duration-200 md:flex ${sidebarHidden ? "w-20" : "w-64"}`}>
+            <div className={`flex items-center gap-2 px-1 ${sidebarHidden ? "justify-center" : "justify-between"}`}>
+                {!sidebarHidden && <Link to="/" className="flex min-w-0 items-center gap-2">
+        <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-primary text-primary-foreground">
           <GraduationCap size={20} strokeWidth={2.25}/>
         </span>
-                <span className="text-display text-xl font-semibold">
+                    <span className="truncate text-display text-xl font-semibold">
           bilimly<span className="text-primary">.</span>ai
         </span>
-            </Link>
+                </Link>}
+                <button
+                    type="button"
+                    onClick={toggleSidebar}
+                    aria-label={sidebarHidden ? "Show sidebar" : "Hide sidebar"}
+                    className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border text-muted-foreground transition hover:bg-muted hover:text-foreground"
+                >
+                    {sidebarHidden ? <PanelLeftOpen className="h-4 w-4"/> : <PanelLeftClose className="h-4 w-4"/>}
+                </button>
+            </div>
 
             <nav className="mt-8 flex flex-1 flex-col gap-1">
                 {NAV_ITEMS.map((item) => (
-                    <NavLink key={item.to} item={item} pathname={pathname}/>
+                    <NavLink key={item.to} item={item} pathname={pathname} collapsed={sidebarHidden}/>
                 ))}
                 <div className="my-3 h-px bg-border"/>
                 {SECONDARY_NAV.map((item) => (
-                    <NavLink key={item.to} item={item} pathname={pathname}/>
+                    <NavLink key={item.to} item={item} pathname={pathname} collapsed={sidebarHidden}/>
                 ))}
                 {user?.role === "ADMIN" && (
-                    <NavLink key="/admin" item={{to: "/admin", labelKey: "Admin", icon: ShieldCheck}} pathname={pathname}/>
+                    <NavLink key="/admin" item={{to: "/admin", labelKey: "Admin", icon: ShieldCheck}} pathname={pathname} collapsed={sidebarHidden}/>
                 )}
             </nav>
 
-            <div className="mt-4 px-1">
+            {!sidebarHidden && <div className="mt-4 px-1">
                 <LanguageSwitcher className="w-full justify-center"/>
-            </div>
+            </div>}
 
-            <div className="mt-4 rounded-2xl border-2 border-foreground/10 bg-card p-4">
+            {!sidebarHidden && <div className="mt-4 rounded-2xl border-2 border-foreground/10 bg-card p-4">
                 <p className="text-xs uppercase tracking-widest text-muted-foreground">{t("nav.profile")}</p>
                 <p className="text-display mt-1 truncate text-lg leading-tight">{displayName}</p>
                 <p className="truncate text-xs text-muted-foreground">{user?.email}</p>
-            </div>
+            </div>}
 
             <button
                 type="button"
                 onClick={handleLogout}
-                className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-full border-2 border-destructive/30 bg-destructive/5 px-4 py-2.5 text-sm font-semibold text-destructive transition hover:bg-destructive/10"
+                title={t("settings.signOut")}
+                className={`mt-4 inline-flex w-full items-center justify-center gap-2 rounded-full border-2 border-destructive/30 bg-destructive/5 px-4 py-2.5 text-sm font-semibold text-destructive transition hover:bg-destructive/10 ${sidebarHidden ? "h-10 px-0" : ""}`}
             >
                 <LogOut className="h-4 w-4"/>
-                {t("settings.signOut")}
+                {!sidebarHidden && t("settings.signOut")}
             </button>
 
-            <div className="relative mt-4 overflow-hidden rounded-2xl border-2 border-foreground/10 bg-card p-4">
+            {!sidebarHidden && <div className="relative mt-4 overflow-hidden rounded-2xl border-2 border-foreground/10 bg-card p-4">
                 <img src={humoBird} alt="" width={80} height={80}
                      className="absolute -right-3 -bottom-3 h-20 w-20 opacity-90"/>
                 <p className="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest text-primary"><Flame
                     className="h-3.5 w-3.5"/> {t("dashboard.streak", "Day streak")}</p>
                 <p className="text-display mt-1 text-lg leading-tight">{t("dashboard.keepStreak", "Keep your streak!")}</p>
-            </div>
+            </div>}
         </aside>
     );
 }
@@ -130,17 +159,21 @@ function Sidebar() {
 function NavLink({
                      item,
                      pathname,
+                     collapsed = false,
                  }: {
     item: { to: string; labelKey: string; icon: React.ComponentType<{ className?: string }>; exact?: boolean };
     pathname: string;
+    collapsed?: boolean;
 }) {
     const {t} = useTranslation();
     const active = item.exact ? pathname === item.to : pathname === item.to || pathname.startsWith(item.to + "/");
     const Icon = item.icon;
+    const label = t(item.labelKey);
     return (
         <Link
             to={item.to as never}
-            className={`group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition ${
+            title={collapsed ? label : undefined}
+            className={`group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition ${collapsed ? "justify-center" : ""} ${
                 active ? "text-primary" : "text-muted-foreground hover:bg-muted hover:text-foreground"
             }`}
         >
@@ -152,7 +185,7 @@ function NavLink({
                 />
             )}
             <Icon className="relative h-4 w-4"/>
-            <span className="relative">{t(item.labelKey)}</span>
+            {!collapsed && <span className="relative truncate">{label}</span>}
         </Link>
     );
 }

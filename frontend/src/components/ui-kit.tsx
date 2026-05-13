@@ -1,4 +1,5 @@
 import {motion} from "framer-motion";
+import {ArrowRight} from "lucide-react";
 
 type CardProps = React.HTMLAttributes<HTMLDivElement> & {
     variant?: "default" | "raised" | "primary";
@@ -87,16 +88,24 @@ export function Stat({n, label, accent}: { n: string; label: string; accent?: bo
     );
 }
 
+type PrimaryButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
+    showArrow?: boolean;
+};
+
 export function PrimaryButton({
                                   children,
                                   className = "",
+                                  showArrow = true,
                                   ...rest
-                              }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
+                              }: PrimaryButtonProps) {
     return (
         <button
             {...rest}
             className={`group inline-flex items-center justify-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-[4px_4px_0_0_oklch(0.30_0.10_280)] transition hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0_0_oklch(0.30_0.10_280)] disabled:opacity-40 disabled:hover:translate-x-0 disabled:hover:translate-y-0 ${className}`}
-        />
+        >
+            {children}
+            {showArrow && <ArrowRight className="h-4 w-4 text-primary-foreground transition group-hover:translate-x-0.5"/>}
+        </button>
     );
 }
 
@@ -109,7 +118,9 @@ export function GhostButton({
         <button
             {...rest}
             className={`inline-flex items-center justify-center gap-2 rounded-full border-2 border-foreground/10 bg-card px-5 py-2.5 text-sm font-semibold transition hover:border-foreground/30 hover:bg-muted ${className}`}
-        />
+        >
+            {children}
+        </button>
     );
 }
 

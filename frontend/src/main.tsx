@@ -2,7 +2,7 @@ import {StrictMode, lazy, Suspense} from 'react'
 import {createRoot} from 'react-dom/client'
 import './index.css'
 import './i18n'
-import {createBrowserRouter, RouterProvider} from 'react-router-dom'
+import {createBrowserRouter, Navigate, RouterProvider} from 'react-router-dom'
 import AppLayout from './layouts/AppLayout'
 import PublicLayout from './layouts/PublicLayout'
 import ProtectedLayout from "./layouts/ProtectedLayout"
@@ -15,7 +15,6 @@ const LessonsPage = lazy(() => import('./pages/Lessons/LessonsPage'))
 const LessonViewPage = lazy(() => import('./pages/Lessons/LessonViewPage'))
 const SignInPage = lazy(() => import('./pages/Auth/SignInPage'))
 const SignUpPage = lazy(() => import('./pages/Auth/SignUpPage'))
-const GrammarPage = lazy(() => import('./pages/Grammar/GrammarPage'))
 const VocabularyPage = lazy(() => import('./pages/Vocabulary/VocabularyPage'))
 const SpeakingPage = lazy(() => import('./pages/Speaking/SpeakingPage'))
 const ListeningPage = lazy(() => import('./pages/Listening/ListeningPage'))
@@ -76,8 +75,10 @@ const router = createBrowserRouter([
                 element: <AppLayout/>,
                 children: [
                     {path: "/app", element: wrap(<DashboardPage/>)},
+                    {path: "/app/lessons", element: wrap(<LessonsPage/>)},
+                    {path: "/app/lessons/:id", element: wrap(<LessonViewPage/>)},
                     {path: "/app/coach", element: wrap(<ChatPage/>)},
-                    {path: "/app/grammar", element: wrap(<GrammarPage/>)},
+                    {path: "/app/grammar", element: <Navigate to="/app/lessons?category=grammar" replace/>},
                     {path: "/app/vocabulary", element: wrap(<VocabularyPage/>)},
                     {path: "/app/speaking", element: wrap(<SpeakingPage/>)},
                     {path: "/app/listening", element: wrap(<ListeningPage/>)},
@@ -85,7 +86,7 @@ const router = createBrowserRouter([
                     {path: "/app/settings", element: wrap(<SettingsPage/>)},
                     {path: "/dashboard", element: wrap(<DashboardPage/>)},
                     {path: "/chat", element: wrap(<ChatPage/>)},
-                    {path: "/grammar", element: wrap(<GrammarPage/>)},
+                    {path: "/grammar", element: <Navigate to="/app/lessons?category=grammar" replace/>},
                     {path: "/vocabulary", element: wrap(<VocabularyPage/>)},
                     {path: "/speaking", element: wrap(<SpeakingPage/>)},
                     {path: "/listening", element: wrap(<ListeningPage/>)},
